@@ -210,8 +210,8 @@ const Player = ((window, document) => {
                         totalInBackpack++;
                 }
 
-                if(totalInBackpack >= 8) {
-                    console.game(console.INFO, "Backpack reached capacity: 8");
+                if(totalInBackpack >= 6) {
+                    console.game(console.INFO, "Backpack reached capacity: 6");
                     return false;
                 }
 

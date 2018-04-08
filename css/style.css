@@ -144,14 +144,13 @@ button,
 }
 
 .item-slot {
-    border:1px solid gray;
     position: relative;
     width: calc(4.615vw - 6px);
     height: calc(4.615vw - 6px);
+    background-color: black;
 }
 
 .item-slot .item {
-    border: 0;
     margin: 0;
 }
 
@@ -289,36 +288,51 @@ button,
 }
 
 .item-rarity-0                  { border-color: rgb(180, 180, 180); }
-.item-rarity-0>div:first-child  { background-color: rgb(130, 130, 130); }
+.item-rarity-0>div:first-child, 
+.progress-bar-outer .item-rarity-0 { background-color: rgb(130, 130, 130); }
 .item-rarity-1                  { border-color: rgb(15, 180, 15); }
-.item-rarity-1>div:first-child  { background-color: rgb(15, 130, 15); }
+.item-rarity-1>div:first-child,
+.progress-bar-outer .item-rarity-1 { background-color: rgb(15, 130, 15); }
 .item-rarity-2                  { border-color: rgb(40, 40, 180); }
-.item-rarity-2>div:first-child  { background-color: rgb(40, 40, 130); }
+.item-rarity-2>div:first-child,
+.progress-bar-outer .item-rarity-2  { background-color: rgb(40, 40, 130); }
 .item-rarity-3                  { border-color: rgb(200, 50, 200); }
-.item-rarity-3>div:first-child  { background-color: rgb(130, 15, 130); }
+.item-rarity-3>div:first-child,
+.progress-bar-outer .item-rarity-3  { background-color: rgb(130, 15, 130); }
 .item-rarity-4                  { border-color: rgb(200, 200, 15); }
-.item-rarity-4>div:first-child  { background-color: rgb(130, 130, 15); }
+.item-rarity-4>div:first-child,
+.progress-bar-outer .item-rarity-4  { background-color: rgb(130, 130, 15); }
 .item-rarity-5                  { border-color: rgb(200, 15, 15); }
-.item-rarity-5>div:first-child  { background-color: rgb(130, 15, 15); }
+.item-rarity-5>div:first-child,
+.progress-bar-outer .item-rarity-5  { background-color: rgb(130, 15, 15); }
 .item-rarity-6                  { border-color: rgb(15, 200, 200); }
-.item-rarity-6>div:first-child  { background-color: rgb(15, 130, 130); }
+.item-rarity-6>div:first-child,
+.progress-bar-outer .item-rarity-6  { background-color: rgb(15, 130, 130); }
 .item-rarity-7                  { border-color: rgb(15, 15, 15); }
-.item-rarity-7>div:first-child  { background-color: rgb(0, 0, 0); }
+.item-rarity-7>div:first-child,
+.progress-bar-outer .item-rarity-7  { background-color: rgb(0, 0, 0); }
 
 .item-rarity-8                  { border-color: rgb(180, 180, 180); }
-.item-rarity-8>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 15)); }
+.item-rarity-8>div:first-child,
+.progress-bar-outer .item-rarity-8  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 15)); }
 .item-rarity-9                  { border-color: rgb(180, 180, 180); }
-.item-rarity-9>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(40, 40, 130)); }
+.item-rarity-9>div:first-child,
+.progress-bar-outer .item-rarity-9  { background: linear-gradient(rgb(130, 130, 130), rgb(40, 40, 130)); }
 .item-rarity-10                  { border-color: rgb(180, 180, 180); }
-.item-rarity-10>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 130)); }
+.item-rarity-10>div:first-child,
+.progress-bar-outer .item-rarity-10  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 130)); }
 .item-rarity-11                  { border-color: rgb(180, 180, 180); }
-.item-rarity-11>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 130, 15)); }
+.item-rarity-11>div:first-child,
+.progress-bar-outer .item-rarity-11  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 130, 15)); }
 .item-rarity-12                  { border-color: rgb(180, 180, 180); }
-.item-rarity-12>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 15)); }
+.item-rarity-12>div:first-child,
+.progress-bar-outer .item-rarity-12  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 15)); }
 .item-rarity-13                  { border-color: rgb(180, 180, 180); }
-.item-rarity-13>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 130)); }
+.item-rarity-13>div:first-child,
+.progress-bar-outer .item-rarity-13  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 130)); }
 .item-rarity-14                  { border-color: rgb(180, 180, 180); }
-.item-rarity-14>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(0, 0, 0)); }
+.item-rarity-14>div:first-child,
+.progress-bar-outer .item-rarity-14  { background: linear-gradient(rgb(130, 130, 130), rgb(0, 0, 0)); }
 
 .c-white {
     color: #dddddd
