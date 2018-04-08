@@ -1,3 +1,7 @@
+2018-04-08 - V0.3.3
+* Quantum Universe Alterator is under maintenance until it starts working again (don't mess with quantum universes kids).
+* Value formula changed to make more sense.
+
 2018-04-08 - V0.3.2
 * Fixed an issue with rolls not coming out as varied as they should have been.
 

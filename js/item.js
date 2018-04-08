@@ -172,12 +172,17 @@ const Item = ((window, document) => {
                 let w3 = weights.reach;
                 let w4 = weights.playerStats;
 
+                let m1 = this.getDamageRoll(true);
+                let m2 = this.getDamageSpeedRoll(true);
+                let m3 = this.getReachRoll(true);
+                let m4 = maxStats;
+
                 let c1 = this.damage;
                 let c2 = this.damageSpeed;
                 let c3 = this.reach;
                 let c4 = totalStats;
 
-                return Math.sqrt((c1 * (c2 * w2 + c3 * w3 + c4 * w4)) / (w1 + w2 + w3 + w4) * 10);
+                return (c1*c2*c3)*(c4/m4) * 10;
             }
             else if(this.type === Item.ARMOR) {
                 let w1 = weights.health;
@@ -185,12 +190,17 @@ const Item = ((window, document) => {
                 let w3 = weights.regenSpeed;
                 let w4 = weights.playerStats;
 
+                let m1 = this.getHealthRoll(true);
+                let m2 = this.getRegenRoll(true);
+                let m3 = this.getRegenSpeedRoll(true);
+                let m4 = maxStats;
+
                 let c1 = this.health / 10;
                 let c2 = this.regen;
                 let c3 = this.regenSpeed;
                 let c4 = totalStats;
 
-                return Math.sqrt((c1 * (c2 * w2 + c3 * w3 + c4 * w4)) / (w1 + w2 + w3 + w4) * 10);
+                return (c1*c2*c3)*(c4/m4) * 10;
             }
             else {
                 return 0;

@@ -129,26 +129,26 @@ const Menu = ((window, document) => {
             description += "<hr>";
 
             if(item.type === Item.WEAPON) {
-                let value = item.damage * player.weights.damage;
+                let value = item.damage;
                 buildStat("damage", item.damage, item.getDamageRoll(true), value);
 
-                value += item.damageSpeed * player.weights.damageSpeed / item.getDamageSpeedRoll(true);
-                buildStat("damagespeed", item.damageSpeed, item.getDamageSpeedRoll(true), value);
+                value *= item.damageSpeed;
+                buildStat("damagespeed", item.damageSpeed, item.getDamageSpeedRoll(true), "x"+value);
 
-                value += item.reach * player.weights.reach / item.getReachRoll(true);
-                buildStat("reach", item.reach, item.getReachRoll(true), value);
+                value *= item.reach;
+                buildStat("reach", item.reach, item.getReachRoll(true), "x"+value);
 
                 
             }
             else if(item.type === Item.ARMOR) {
-                let value = item.regen * player.weights.regen / item.getRegenRoll(true);
+                let value = item.regen;
                 buildStat("regen", item.regen, item.getRegenRoll(true), value);
 
-                value += item.regenSpeed * player.weights.regenSpeed / item.getRegenSpeedRoll(true);
-                buildStat("regenspeed", item.regenSpeed, item.getRegenSpeedRoll(true), value);
+                value *= item.regenSpeed;
+                buildStat("regenspeed", item.regenSpeed, item.getRegenSpeedRoll(true), "x"+value);
 
-                value *= item.health / 10 * player.weights.health;
-                buildStat("health", item.health, item.getHealthRoll(true), value);
+                value *= item.health;
+                buildStat("health", item.health, item.getHealthRoll(true), "x"+value);
             }
             
             description += "<hr>";
