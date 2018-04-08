@@ -147,7 +147,7 @@ const Item = ((window, document) => {
             y = y * (maxIncl - minIncl);
             y += minIncl;
 
-            return Math.ceil(y) * Math.triangular(triangular);
+            return Math.ceil(y * Math.triangular(triangular));
         }
     
         static getRerollCost(rarity, rolls) {
