@@ -230,6 +230,8 @@ const Menu = ((window, document) => {
         }
 
         remove(menu) {
+            let menus = this[this.sMenus];
+            
             menu.elem.parentNode.removeChild(menu.elem);
             menus.splice(menus.indexOf(menu), 1);
         }
