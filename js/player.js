@@ -61,6 +61,11 @@ const Player = ((window, document) => {
             this.rage.value = init.rage.value || 0;
             this.rage.max = init.rage.max || 0;
 
+            init.frenzy = init.frenzy || {}
+            this.frenzy = {};
+            this.frenzy.value = init.frenzy.value || 0;
+            this.frenzy.max = init.frenzy.max || 0;
+
             init.weights = init.weights || {}
             this.weights = {};
             this.weights.damage = init.weights.damage || 1;
@@ -297,6 +302,7 @@ const Player = ((window, document) => {
             this.maxHealth = 10;
 
             this.rage.max = 100;
+            this.frenzy.max = 100;
             
             let l = this.inventory.length;
             for(let i = 0; i < l; i++) {
@@ -356,6 +362,36 @@ const Player = ((window, document) => {
             }
 
             this.emit("rageChanged", rage.value, rage.max, rage.threshold);
+        }
+
+        addFrenzy(amt) {
+            let frenzy = this.frenzy;
+
+            if(amt == null) {
+                frenzy.value = frenzy.max;
+            }
+            else {
+                frenzy.value += amt;
+                if(frenzy.value > frenzy.max)
+                    frenzy.value = frenzy.max;
+            }
+
+            this.emit("frenzyChanged", frenzy.value, frenzy.max, frenzy.threshold);
+        }
+
+        removeFrenzy(amt) {
+            let frenzy = this.frenzy;
+            
+            if(amt == null) {
+                frenzy.value = 0;
+            }
+            else {
+                frenzy.value -= amt;
+                if(frenzy.value < 0)
+                    frenzy.value = 0;
+            }
+
+            this.emit("frenzyChanged", frenzy.value, frenzy.max, frenzy.threshold);
         }
 
         heal(amt) {

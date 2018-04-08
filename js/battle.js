@@ -32,6 +32,7 @@ const Battle = ((window, document) => {
             this.timestampTimeElapsedInRun = 0;
             player.heal();
             player.removeRage();
+            player.removeFrenzy();
     
             this.wave = 1;
             this.subWave = 0;
@@ -123,7 +124,7 @@ const Battle = ((window, document) => {
                 let item = equippedItems[j];
     
                 if(item.damage > 0) {
-                    let interval = 1000 * (1 / item.damageSpeed) * (-player.rage.value / (player.rage.max * 2) + 1);
+                    let interval = 1000 * (1 / item.damageSpeed) * (-player.frenzy.value / (player.frenzy.max * 2) + 1);
 
                     item._battleClockSpeed += fixedDelta;
                     item._battleClockSpeedFinish = interval;
@@ -141,11 +142,15 @@ const Battle = ((window, document) => {
                                 this.emit("enemyDodged", enemy, item._inventory.data);
                             }
                             else {
-                                let damage = Battle.getDamage(item.damage, player.stats.str.total, enemy.stats.def);
+                                let enemyAtMaxHealth = enemy.health === enemy.maxHealth;
+                                let damage = Battle.getDamage(item.damage, player.stats.str.total, enemy.stats.def) * (player.frenzy.value / player.frenzy.max + 1);
                                 enemy.health -= damage;
                                 this.emit("enemyDamaged", enemy, damage, item._inventory.data);
         
                                 if(enemy.health <= 0) {
+                                    if(enemyAtMaxHealth)
+                                        player.addFrenzy(1);
+
                                     this.enemies.splice(i, 1);
                                     i--;
                                     il--;
@@ -158,6 +163,9 @@ const Battle = ((window, document) => {
                     
                                     if(this.enemies.length === 0)
                                         this.nextWave();
+                                }
+                                else {
+                                    player.removeFrenzy(2);
                                 }
                             }
                         }

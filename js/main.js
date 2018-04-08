@@ -396,6 +396,10 @@ let debug = (function() {
                 document.getElementById("progressPlayerRage").style.transform = Utility.getProgressBarTransformCSS(value, max);
             });
 
+            model.modules.player.on("frenzyChanged", (value, max) => {
+                document.getElementById("progressPlayerFrenzy").style.transform = Utility.getProgressBarTransformCSS(value, max);
+            });
+
             model.modules.player.on("statsUpdated", player => {
                 try {
                     document.getElementById("textPlayerLevel").innerHTML = model.modules.player.level;

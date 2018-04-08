@@ -8,7 +8,7 @@
 	<meta name="description" content="Grabz Idle (dev name)">
 	<meta name="author" content="@Grabz#4707">
 
-	<link rel="stylesheet" href="css/style.css?v=9">
+	<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 
 <template id="template_item_weapon">
@@ -73,7 +73,7 @@
 <body class="body-performance-high text-outline" style="display:flex">
     <div id="containerMenus"></div>
 
-    <div style="position:absolute;bottom:0;left:0">V0.3.4</br>expect your save to be deleted</br>made by @Grabz#4707</div>
+    <div style="position:absolute;bottom:0;left:0">V0.4.0</br>expect your save to be deleted</br>made by @Grabz#4707</div>
     <div style="flex:0 0 14vw; margin-right:10px">
         <div style="float:left">Total Time:</div> <div style="float:right" id="textTimer"></div><br>
         <div style="float:left">Run Time:</div> <div style="float:right" id="textTimerRun"></div><br>
@@ -130,7 +130,10 @@
                     <div class="progress-bar-outer text-outline" style="flex:0 0 6%; border-color:black; margin-top:-1px">
                         <div id="progressPlayerRage" class="progress-bar bg-red"></div>
                     </div>
-                    <div style="flex:0 0 30%"></div>
+                    <div class="progress-bar-outer text-outline" style="flex:0 0 6%; border-color:black; margin-top:-1px">
+                        <div id="progressPlayerFrenzy" class="progress-bar bg-green"></div>
+                    </div>
+                    <div style="flex:0 0 24%"></div>
                 </div>
                 <div style="flex:1 0 auto"></div>
             </div>
@@ -160,18 +163,17 @@
 
     <script src="libs/EventEmitter.min.js?v=1"></script>
 
-    <script src="js/console.js?v=9"></script>
-    <script src="js/utility.js?v=9"></script>
+    <script  src="js/console.js?v=10"></script>
+    <script  src="js/utility.js?v=10"></script>
 
-    <script src="js/item.js?v=9"></script>
-    <script src="js/player.js?v=9"></script>
-    <script src="js/enemy.js?v=9"></script>
-    <script src="js/battle.js?v=9"></script>
-    <script src="js/world.js?v=9"></script>
-    <script src="js/floateys.js?v=9"></script>
+    <script     src="js/item.js?v=10"></script>
+    <script   src="js/player.js?v=10"></script>
+    <script    src="js/enemy.js?v=10"></script>
+    <script   src="js/battle.js?v=10"></script>
+    <script    src="js/world.js?v=10"></script>
+    <script src="js/floateys.js?v=10"></script>
+    <script     src="js/menu.js?v=10"></script>
 
-    <script src="js/menu.js?v=9"></script>
-
-	<script src="js/main.js?v=9"></script>
+	<script     src="js/main.js?v=10"></script>
 </body>
 </html>

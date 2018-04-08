@@ -1,3 +1,7 @@
+2018-04-08 - V0.4.0
+* Rage changed from giving 0.5x to attack interval to giving a 2x damage boost at max.
+* Added Frenzy - gain 1 stack when one hitting an enemy from full health, lose 2 stacks when not, 0.5x to attack interval at max.
+
 2018-04-08 - V0.3.4
 * Value formula is now square rooted to be easier to read.
 
