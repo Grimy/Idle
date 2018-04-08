@@ -51,6 +51,8 @@ const World = ((window, document) => {
                     g = 50;
                 }
 
+                g = Math.round(g);
+
                 this.emit("timeUpdated", r, g, b, hours, minutes);
             }
         }

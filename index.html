@@ -57,6 +57,10 @@
     </div>
 </template>
 
+<template id="template_floatey">
+    <div style="position:absolute;transition: transform 0.1s ease-out; z-index:9999"></div>
+</template>
+
 <template id="template_menu">
     <div class="menu">
         <span class="menu-x c-red">X</span>
@@ -68,7 +72,7 @@
 <body class="body-performance-high text-outline" style="display:flex">
     <div id="containerMenus"></div>
 
-    <div style="position:absolute;bottom:0;left:0">V0.1.2</br>expect your save to be deleted</br>made by @Grabz#4707</div>
+    <div style="position:absolute;bottom:0;left:0">V0.2.0</br>expect your save to be deleted</br>made by @Grabz#4707</div>
     <div style="flex:0 0 14vw; margin-right:10px">
         <div style="float:left">Total Time:</div> <div style="float:right" id="textTimer"></div><br>
         <div style="float:left">Run Time:</div> <div style="float:right" id="textTimerRun"></div><br>
@@ -109,6 +113,7 @@
     </div>
     <div style="flex:0 0 60vw; display:flex; flex-flow:column nowrap">
         <div id="containerWorld" style="display:flex; position:relative; flex-flow:column nowrap; flex:2 0 auto">
+            <div id="containerFloateys" style="position:absolute;top:0;bottom:0;left:0;right:0;width:100%;height:100%"></div>
             <div id="textCurrentTime" style="position:absolute;top:3px;right:3px"></div>
             <div id="containerBattleEnemy" style="flex:1 0 auto; position:relative"></div>
             <div id="containerBattlePlayer" style="display:flex; flex-flow:row nowrap;flex:0 0 100px;">
@@ -146,22 +151,24 @@
             <button id="buttonChangeValueWeights" class="button-c-default" style="width:100%">Quantum Universe Alterator</button>
             <hr>
             <input type="checkbox" id="checkboxLowPerformance">Low Performance Mode</input><br>
+            <input type="checkbox" id="checkboxEnableDamageNumbers">Damage Numbers</input><br>
         </div>
     </div>
 
     <script src="libs/EventEmitter.min.js?v=1"></script>
 
-    <script src="js/console.js?v=3"></script>
-    <script src="js/utility.js?v=3"></script>
+    <script src="js/console.js?v=4"></script>
+    <script src="js/utility.js?v=4"></script>
 
-    <script src="js/item.js?v=3"></script>
-    <script src="js/player.js?v=3"></script>
-    <script src="js/enemy.js?v=3"></script>
-    <script src="js/battle.js?v=3"></script>
-    <script src="js/world.js?v=3"></script>
+    <script src="js/item.js?v=4"></script>
+    <script src="js/player.js?v=4"></script>
+    <script src="js/enemy.js?v=4"></script>
+    <script src="js/battle.js?v=4"></script>
+    <script src="js/world.js?v=4"></script>
+    <script src="js/floateys.js?v=4"></script>
 
-    <script src="js/menu.js?v=3"></script>
+    <script src="js/menu.js?v=4"></script>
 
-	<script src="js/main.js?v=3"></script>
+	<script src="js/main.js?v=4"></script>
 </body>
 </html>

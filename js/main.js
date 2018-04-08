@@ -19,22 +19,25 @@ let debug = (function() {
             player: null,
             battle: null,
             menu: null,
-            world: null
+            world: null,
+            floateys: null,
         },
         clock: 0,
         start: Date.now(),
         flags: {
             clickedHelp: false,
-            lowPerformanceMode: false
+            lowPerformanceMode: false,
+            enableDamageNumbers: true,
         },
         version: 12,
-        subVersion: 1,
+        subVersion: 2,
     }
 
     let paused = false;
 
     load();
     onLowPerformanceChecked(model.flags.lowPerformanceMode, true);
+    onEnableDamageNumbersChecked(model.flags.enableDamageNumbers, true);
 
     if(model.modules.player.inventory.length === 0) {
         model.modules.player.addItem(new Item().generateRandom(null, 0, Item.WEAPON));
@@ -100,6 +103,11 @@ let debug = (function() {
             onLowPerformanceChecked(this.checked);
         }
 
+        document.getElementById("checkboxEnableDamageNumbers").onchange = function(e) {
+            model.flags.enableDamageNumbers = this.checked;
+            onEnableDamageNumbersChecked(this.checked);
+        }
+
         document.getElementById("containerProgressRarityChance").onclick = e => {
             let wave = model.modules.battle.wave;
             let startingRarity = Item.getRarityRollStartingRarity(wave);
@@ -150,23 +158,30 @@ let debug = (function() {
 
             //COMPATIBILITY CODE
             if(s.subVersion == null) {
-                model.modules.player = new Player(s.player);
-                model.modules.battle = new Battle(s.battle);
-                model.modules.menu = new Menu(s.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
-                model.modules.world = new World(null);
+                s.modules = {};
+                s.modules.player = s.player;
+                s.modules.battle = s.battle;
+                s.modules.menu = s.menu;
+
+                s.subVersion = 1;
             }
-            else {
-                model.modules.player = new Player(s.modules.player);
-                model.modules.battle = new Battle(s.modules.battle);
-                model.modules.menu = new Menu(s.modules.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
-                model.modules.world = new World(s.modules.world);
+
+            if(s.subVersion <= 1) {
+                s.flags.enableDamageNumbers = true;
             }
+
+            model.modules.player = new Player(s.modules.player);
+            model.modules.battle = new Battle(s.modules.battle);
+            model.modules.menu = new Menu(s.modules.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
+            model.modules.world = new World(s.modules.world);
+            model.modules.floateys = new Floateys(s.modules.floateys, document.getElementById("template_floatey"), document.getElementById("containerFloateys"));
         }
         else {
             model.modules.player = new Player(null);
             model.modules.battle = new Battle(null);
             model.modules.menu = new Menu(null, document.getElementById("template_menu"), document.getElementById("containerMenus"));
             model.modules.world = new World(null);
+            model.modules.floateys = new Floateys(null, document.getElementById("template_floatey"), document.getElementById("containerFloateys"));
         }
         (() => {
             function refreshEnemyStats(elem, enemy) {
@@ -436,16 +451,26 @@ let debug = (function() {
                 } catch(e) {console.error(e);}
             });
 
-            model.modules.battle.on("playerUpdated", player => {
+            model.modules.battle.on("playerUpdated", (player, playerHealthChange) => {
                 try {
+                    if(model.flags.enableDamageNumbers) {
+                        if(playerHealthChange > 0) 
+                            model.modules.floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "80%", "85%", "c-teal");
+                        else if(playerHealthChange < 0)
+                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 10) / 10), "80%", "85%", "c-red");
+                    }
+
                     document.getElementById("textPlayerHealth").innerHTML = Math.ceil(player.health);
                     document.getElementById("textPlayerMaxHealth").innerHTML = player.maxHealth;
                     document.getElementById("progressPlayerHealth").style.transform = Utility.getProgressBarTransformCSS(player.health, player.maxHealth);
                 } catch(e) {console.error(e);}
             });
 
-            model.modules.battle.on("enemyDamaged", enemy => {
+            model.modules.battle.on("enemyDamaged", (enemy, damage) => {
                 try {
+                    if(model.flags.enableDamageNumbers)
+                        model.modules.floateys.createFloatingNumber("-" + (Math.ceil(damage * 10) / 10), (enemy.screenX + 10) + "%", (enemy.screenY - 10) + "%", "c-red");
+
                     let elem = document.getElementById("enemy" + enemy.id);
                     if(elem != null) {
                         elem.querySelector(".progress-bar-text").innerHTML = Math.ceil(enemy.health) + "/" + enemy.maxHealth;
@@ -581,6 +606,9 @@ let debug = (function() {
 
             loop(frameTime);
 
+            model.modules.world.update(frameTime);
+            model.modules.floateys.update(frameTime);
+
             document.getElementById("textTimer").innerHTML = Utility.getFormattedTime(model.clock);
             document.getElementById("textTimerRun").innerHTML = Utility.getFormattedTime(model.modules.battle.timestampTimeElapsedInRun);
 
@@ -596,8 +624,6 @@ let debug = (function() {
         if(!paused) {
             model.modules.battle.update(frameTime, model.clock, model.modules.player);
         }
-
-        model.modules.world.update(frameTime);
     }
 
     function onLowPerformanceChecked(checked, init) {
@@ -608,6 +634,12 @@ let debug = (function() {
 
         if(init) {
             document.getElementById("checkboxLowPerformance").checked = checked;
+        }
+    }
+
+    function onEnableDamageNumbersChecked(checked, init) {
+        if(init) {
+            document.getElementById("checkboxEnableDamageNumbers").checked = checked;
         }
     }
 

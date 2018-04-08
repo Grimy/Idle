@@ -70,8 +70,8 @@ const Battle = ((window, document) => {
                 let enemy = new Enemy({
                     id: i,
         
-                    screenX:Utility.getRandomInt(10, 91),
-                    screenY:Utility.getRandomInt(10, 91),
+                    screenX:Utility.getRandomInt(20, 81),
+                    screenY:Utility.getRandomInt(20, 81),
         
                     health:hp,
                     maxHealth:hp,
@@ -113,6 +113,8 @@ const Battle = ((window, document) => {
         update(fixedDelta, clock, player) {
             this.timestampTimeElapsedInRun += fixedDelta;
 
+            let playerHealthBeforeUpdate = player.health;
+
             let equippedItems = [];
 
             let jl = player.inventory.length;
@@ -143,25 +145,25 @@ const Battle = ((window, document) => {
                             if(Math.random() < Battle.getDodge(player.stats.agi.total, enemy.stats.agi)) {
                                 //dodged hit
                             }
-                            else
-                                enemy.health -= Battle.getDamage(item.damage, player.stats.str.total, enemy.stats.def);
-        
-                            if(enemy.health <= 0) {
-                                this.enemies.splice(i, 1);
-                                i--;
-                                il--;
-                                this.emit("enemiesRemoved", [enemy]);
-
-                                player.xp += Math.ceil(this.wave / 10);
-                                player.addItem(new Item().generateRandom(this.wave));
-
-                                player.updateStats();
-                
-                                if(this.enemies.length === 0)
-                                    this.nextWave();
-                            }
                             else {
-                                this.emit("enemyDamaged", enemy);
+                                let damage = Battle.getDamage(item.damage, player.stats.str.total, enemy.stats.def);
+                                enemy.health -= damage;
+                                this.emit("enemyDamaged", enemy, damage);
+        
+                                if(enemy.health <= 0) {
+                                    this.enemies.splice(i, 1);
+                                    i--;
+                                    il--;
+                                    this.emit("enemiesRemoved", [enemy]);
+
+                                    player.xp += Math.ceil(this.wave / 10);
+                                    player.addItem(new Item().generateRandom(this.wave));
+
+                                    player.updateStats();
+                    
+                                    if(this.enemies.length === 0)
+                                        this.nextWave();
+                                }
                             }
                         }
                     }
@@ -211,7 +213,7 @@ const Battle = ((window, document) => {
                 this.emit("enemyUpdated", enemy);
             }
     
-            this.emit("playerUpdated", player);
+            this.emit("playerUpdated", player, (player.health - playerHealthBeforeUpdate));
         }
     
         static getEnemyInterval(enemySpeed, enemySPD, playerSPD) {
