@@ -182,7 +182,7 @@ const Item = ((window, document) => {
                 let c3 = this.reach;
                 let c4 = totalStats;
 
-                return (c1*c2*c3)*(c4/m4) * 10;
+                return Math.sqrt((c1*c2*c3)*(c4/m4)) * 10;
             }
             else if(this.type === Item.ARMOR) {
                 let w1 = weights.health;
@@ -200,7 +200,7 @@ const Item = ((window, document) => {
                 let c3 = this.regenSpeed;
                 let c4 = totalStats;
 
-                return (c1*c2*c3)*(c4/m4) * 10;
+                return Math.sqrt((c1*c2*c3)*(c4/m4)) * 10;
             }
             else {
                 return 0;

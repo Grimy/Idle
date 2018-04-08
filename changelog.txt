@@ -1,3 +1,6 @@
+2018-04-08 - V0.3.4
+* Value formula is now square rooted to be easier to read.
+
 2018-04-08 - V0.3.3
 * Quantum Universe Alterator is under maintenance until it starts working again (don't mess with quantum universes kids).
 * Value formula changed to make more sense.
