@@ -1,3 +1,8 @@
+2018-04-08 - V0.2.1
+* Added dodge floating text.
+* Left hand weapon hits now show damage numbers on the left side and right hand on the right side.
+* Fixed damage numbers being off on the Y axis.
+
 2018-04-08 - V0.2.0
 * Added floating numbers! (and an option to turn them off)
 * Fixed rounding issue that would cause the world background to disappear.

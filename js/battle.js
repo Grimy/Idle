@@ -71,7 +71,7 @@ const Battle = ((window, document) => {
                     id: i,
         
                     screenX:Utility.getRandomInt(20, 81),
-                    screenY:Utility.getRandomInt(20, 81),
+                    screenY:Utility.getRandomInt(10, 61),
         
                     health:hp,
                     maxHealth:hp,
@@ -143,12 +143,12 @@ const Battle = ((window, document) => {
                             let enemy = this.enemies[i];
                             
                             if(Math.random() < Battle.getDodge(player.stats.agi.total, enemy.stats.agi)) {
-                                //dodged hit
+                                this.emit("enemyDodged", enemy, item._inventory.data);
                             }
                             else {
                                 let damage = Battle.getDamage(item.damage, player.stats.str.total, enemy.stats.def);
                                 enemy.health -= damage;
-                                this.emit("enemyDamaged", enemy, damage);
+                                this.emit("enemyDamaged", enemy, damage, item._inventory.data);
         
                                 if(enemy.health <= 0) {
                                     this.enemies.splice(i, 1);
@@ -196,17 +196,17 @@ const Battle = ((window, document) => {
                     enemy._battleCoordinatorClockSelf = 0;
                     
                     if(Math.random() < Battle.getDodge(enemy.stats.agi, player.stats.agi.total)) {
-                        //dodged hit
+                        this.emit("playerDodged", player);
                     }
                     else {
                         player.health -= Battle.getDamage(enemy.damage, enemy.stats.str, player.stats.def.total);
                         player.removeRage(2);
-                    }
-                    
-                    if(player.health <= 0) {
-                        console.game(console.INFO, "Defeated! Wave: " + this.wave + "." + this.subWave + ". Time: " + Utility.getFormattedTime(this.timestampTimeElapsedInRun));
-                        this.startNewRun(player);
-                        return;
+
+                        if(player.health <= 0) {
+                            console.game(console.INFO, "Defeated! Wave: " + this.wave + "." + this.subWave + ". Time: " + Utility.getFormattedTime(this.timestampTimeElapsedInRun));
+                            this.startNewRun(player);
+                            return;
+                        }
                     }
                 }
     

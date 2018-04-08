@@ -455,9 +455,9 @@ let debug = (function() {
                 try {
                     if(model.flags.enableDamageNumbers) {
                         if(playerHealthChange > 0) 
-                            model.modules.floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "80%", "85%", "c-teal");
+                            model.modules.floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-teal");
                         else if(playerHealthChange < 0)
-                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 10) / 10), "80%", "85%", "c-red");
+                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-red");
                     }
 
                     document.getElementById("textPlayerHealth").innerHTML = Math.ceil(player.health);
@@ -466,17 +466,29 @@ let debug = (function() {
                 } catch(e) {console.error(e);}
             });
 
-            model.modules.battle.on("enemyDamaged", (enemy, damage) => {
+            model.modules.battle.on("enemyDamaged", (enemy, damage, playerItemId) => {
                 try {
                     if(model.flags.enableDamageNumbers)
-                        model.modules.floateys.createFloatingNumber("-" + (Math.ceil(damage * 10) / 10), (enemy.screenX + 10) + "%", (enemy.screenY - 10) + "%", "c-red");
+                        model.modules.floateys.createFloatingNumber("-" + (Math.ceil(damage * 10) / 10), (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-red");
 
                     let elem = document.getElementById("enemy" + enemy.id);
                     if(elem != null) {
-                        elem.querySelector(".progress-bar-text").innerHTML = Math.ceil(enemy.health) + "/" + enemy.maxHealth;
+                        elem.querySelector(".progress-bar-text").innerHTML = Math.ceil(Math.max(0, enemy.health)) + "/" + enemy.maxHealth;
                         elem.querySelector(".progress-bar").style.transform = Utility.getProgressBarTransformCSS(enemy.health, enemy.maxHealth);
                     }
                 } catch(e) {console.error(e);}
+            });
+
+            model.modules.battle.on("enemyDodged", (enemy, playerItemId) => {
+                if(model.flags.enableDamageNumbers)
+                    model.modules.floateys.createFloatingNumber("Dodged", (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-green");
+
+            });
+
+            model.modules.battle.on("playerDodged", player => {
+                if(model.flags.enableDamageNumbers)
+                    model.modules.floateys.createFloatingNumber("Dodged", "75%", "85%", "c-green");
+
             });
 
             model.modules.battle.on("enemyUpdated", enemy => {
@@ -489,15 +501,24 @@ let debug = (function() {
             model.modules.battle.on("enemiesRemoved", enemies => {
                 try {
                     let containerBattleEnemy = document.getElementById("containerBattleEnemy");
+
                     if(enemies == null) {
-                        containerBattleEnemy.innerHTML = "";
+                        let elems = Array.from(containerBattleEnemy.children);
+                        let l = elems.length;
+                        for(let i = 0; i < l; i++) {
+                            if(elems[i].id !== "enemyRemoved")
+                                containerBattleEnemy.removeChild(elems[i]);
+                        }
                     }
                     else {
                         let l = enemies.length;
                         for(let i = 0; i < l; i++) {
                             let enemy = containerBattleEnemy.querySelector("#enemy" + enemies[i].id)
-                            if(enemy != null)
-                                containerBattleEnemy.removeChild(enemy);
+                            if(enemy != null) {
+                                enemy.id = "enemyRemoved";
+
+                                setTimeout(() => containerBattleEnemy.removeChild(enemy), 1000);
+                            }
                         }
                     }
                 } catch(e) {console.error(e);}
