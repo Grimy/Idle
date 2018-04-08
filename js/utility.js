@@ -48,4 +48,17 @@ const Utility = Object.freeze({
     getProgressBarTransformCSS : function(number, maxNumber) {
         return "translateX(-" + (100 - Math.ceil(number / maxNumber * 100)) + "%)";
     },
+    convertRatioToAddToNumber(array, total) {
+		var wrongTotal = 0;
+		for(var i = 0; i < array.length; i++)
+			wrongTotal += array[i];
+		
+		var multiplier = total / wrongTotal;
+		
+		var newArray = [];
+		for(var i = 0; i < array.length; i++)
+			newArray[i] = array[i] * multiplier;
+		
+		return newArray;
+	}
 });

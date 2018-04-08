@@ -1,3 +1,9 @@
+2018-04-08 - V0.3.0
+* Player now starts with 60 trained stats in every stat.
+* Added total stat display to enemies and to player.
+* Enemies now have 5x less health.
+* Enemies' total stats per wave has now changed to use a different formula.
+
 2018-04-08 - V0.2.1
 * Added dodge floating text.
 * Left hand weapon hits now show damage numbers on the left side and right hand on the right side.

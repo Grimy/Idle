@@ -313,8 +313,10 @@ const Player = ((window, document) => {
                     this.stats[name].item += item.stats[name];
             }
             
-            for(let name in this.stats)
+            for(let name in this.stats) {
                 this.stats[name].level += this.level;
+                this.stats[name].trained = 60;
+            }
 
             for(let name in this.stats)
                 this.stats[name].calculateTotal();

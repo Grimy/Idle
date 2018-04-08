@@ -56,16 +56,13 @@ const Battle = ((window, document) => {
             this.emit("enemiesRemoved");
             this.enemies.splice(0, this.enemies.length);
             for(let i = 0; i < random; i++) {
-                let hp = Math.floor(Math.triangular((this.wave) / 10) * 500);
-                let damage = Math.floor(Math.triangular((this.wave) / 10) * 10);
+                let hp = Math.floor(Math.triangular((this.wave) / 10) * 100);
+                let damage = (Math.triangular((this.wave) / 10) * 10);
     
                 let damageSpeed = Utility.getRandomInt(4, 21) / 10;
                 damage = damage * damageSpeed;
 
                 hp = Math.ceil(Utility.getRandomInt(hp / 2, hp * 2));
-
-                if(damage < 1)
-                    damage = 1;
                 
                 let enemy = new Enemy({
                     id: i,
@@ -80,21 +77,19 @@ const Battle = ((window, document) => {
                     damageSpeed:damageSpeed,
                 });
 
-                let statCeiling = Math.ceil((this.wave / 10) * 25);
-                let statTotal = 0;
-                for(let name in enemy.stats) {
-                    let stat = Utility.getRandomInt(0, this.wave * 2);
-                    enemy.stats[name] = stat;
-                    statTotal += stat;
-                }
+                let statCeiling = Battle.getEnemyStatCeiling(this.wave, Object.keys(enemy.stats).length);
 
+                let arr = [];
+                for(let name in enemy.stats)
+                    arr.push(Math.random());
+
+                arr = Utility.convertRatioToAddToNumber(arr, statCeiling);
+
+                let j = 0;
                 for(let name in enemy.stats) {
-                    if(statTotal === 0)
-                        enemy.stats[name] = 0;
-                    else
-                        enemy.stats[name] = Math.floor(enemy.stats[name] * ((this.wave * 2) / statTotal));
-                }
-                    
+                    enemy.stats[name] = Math.ceil(arr[j]);
+                    j++;
+                }        
 
                 this.enemies.push(enemy);
             }
@@ -249,6 +244,11 @@ const Battle = ((window, document) => {
                 value = maxSubWave;
 
             return value
+        }
+
+        static getEnemyStatCeiling(wave, statCount) {
+            //initial offset   +  rarity offset           +  level offset
+            return (25 * 3 * statCount) + Math.ceil((wave / 10) * 25 * statCount) + (wave * statCount);
         }
     }
 })(null, null);

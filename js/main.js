@@ -222,11 +222,13 @@ let debug = (function() {
                         case "textHealth":
                             elem.innerHTML = Math.ceil(enemy.health) + "/" + Math.ceil(enemy.maxHealth);
                             break;
+                        case "textStatCap":
+                            elem.innerHTML = Math.ceil(Battle.getEnemyStatCeiling(model.modules.battle.wave, Object.keys(enemy.stats).length));
                         }
 
                         for(let name in enemy.stats) {
                             if(elem.dataset["id"] === "progress" + name) {
-                                elem.style.transform = Utility.getProgressBarTransformCSS(enemy.stats[name], model.modules.player.stats[name].total);
+                                elem.style.transform = Utility.getProgressBarTransformCSS(enemy.stats[name], Battle.getEnemyStatCeiling(model.modules.battle.wave, Object.keys(enemy.stats).length));
                             }
                         }
                     }
@@ -403,6 +405,7 @@ let debug = (function() {
                     document.getElementById("textPlayerGold").innerHTML = player.gold.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
                     let containerStats = document.getElementById("containerStats");
+                    
                     if(containerStats.children.length === 0) {
                         for(let name in player.stats) {
                             let div = document.createElement("div");
@@ -413,8 +416,14 @@ let debug = (function() {
                         }
                     }
 
-                    for(let name in player.stats)
-                        containerStats.querySelector("#textPlayer" + name.toUpperCase()).innerHTML = ": " + player.stats[name].total + " (L:" + player.stats[name].level + ", I:" + player.stats[name].item + ", T:" + player.stats[name].trained + ")";
+                    let total = 0;
+                    for(let name in player.stats) {
+                        let cur = player.stats[name].total;
+                        total += cur;
+                        containerStats.querySelector("#textPlayer" + name.toUpperCase()).innerHTML = ": " + cur + " (L:" + player.stats[name].level + ", I:" + player.stats[name].item + ", T:" + player.stats[name].trained + ")";
+                    }
+
+                    document.getElementById("textTotalStats").innerHTML = total;
                 } catch(e){console.error(e);}
             });
 
@@ -457,7 +466,7 @@ let debug = (function() {
                         if(playerHealthChange > 0) 
                             model.modules.floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-teal");
                         else if(playerHealthChange < 0)
-                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-red");
+                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 100) / 100), "75%", "85%", "c-red");
                     }
 
                     document.getElementById("textPlayerHealth").innerHTML = Math.ceil(player.health);

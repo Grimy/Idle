@@ -48,11 +48,12 @@
     <div class="text-outline enemy">
         <div><span data-id="textDamage"></span><span data-id="textDamageBase" class="c-gray"></span><span class="c-red"><span class="icon-damage"></span></span> <span data-id="textSpeed"></span><span class="c-green"><span class="icon-damagespeed"></span></div>
         <div data-id="containerProgress" style="border-left:1px solid black">
-            <div class="progress-bar-outer" style="width:10vw;border:1px solid black;border-left:none;">
+            <div class="progress-bar-outer" style="position:relative;width:10vw;border:1px solid black;border-left:none;">
                 <div data-id="textHealth" class="progress-bar-text"></div>
                 <div data-id="progressHealth" class="progress-bar"></div>
                 <div data-id="progressCooldown" class="enemy-attack-progress" style="position:absolute;width:100%;left:0"></div>
             </div>
+            <div data-id="textStatCap" style="position:absolute;right:0;bottom:0;border-right:2px dotted black;font-size:0.8vw">0</div>
         </div>
     </div>
 </template>
@@ -72,7 +73,7 @@
 <body class="body-performance-high text-outline" style="display:flex">
     <div id="containerMenus"></div>
 
-    <div style="position:absolute;bottom:0;left:0">V0.2.1</br>expect your save to be deleted</br>made by @Grabz#4707</div>
+    <div style="position:absolute;bottom:0;left:0">V0.3.0</br>expect your save to be deleted</br>made by @Grabz#4707</div>
     <div style="flex:0 0 14vw; margin-right:10px">
         <div style="float:left">Total Time:</div> <div style="float:right" id="textTimer"></div><br>
         <div style="float:left">Run Time:</div> <div style="float:right" id="textTimerRun"></div><br>
@@ -96,6 +97,7 @@
         <div><span class="icon-gold"></span>: </span><span id="textPlayerGold"></span></div>
         <hr>
         <div id="containerStats"></div>
+        Total: <span id="textTotalStats"></span>
         <hr>
         <div style="position:relative;display:flex;flex-flow:column nowrap">
             <span>Equipment:</span>
