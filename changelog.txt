@@ -1,3 +1,6 @@
+2018-04-08 - V0.3.1
+* Day-night cycle now gets slightly darker during night time.
+
 2018-04-08 - V0.3.0
 * Player now starts with 60 trained stats in every stat.
 * Added total stat display to enemies and to player.
