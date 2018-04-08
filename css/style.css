@@ -2,10 +2,13 @@
     overflow: hidden;
     box-sizing: border-box;
     user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 body {
-    background-color: black;
+    background-color: rgb(80, 50, 0);
     color: #dddddd;
     position: absolute;
     margin: 16px 16px 16px 16px;
@@ -20,8 +23,40 @@ input[type="number"] {
     color: inherit;
 }
 
+hr,
+#containerWorld {
+    border-color: rgb(165, 104, 0);
+}
+
+.panel {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(165, 104, 0);
+    background-color: rgb(119, 75, 0);
+}
+
+.panel#containerInventory {
+    border: none;
+    box-shadow: 0 0 0 1px rgb(165, 104, 0) inset;
+}
+
+.progress-bar-outer {
+    background-color: rgb(35, 22, 0);
+    border: 1px solid rgb(165, 104, 0); 
+}
+
+#containerProgressRarityChance .progress-bar,
+#progressBattleMaxSubWaveCurrentZone.progress-bar {
+    border-right: 2px dotted rgb(165, 104, 0);
+}
+
 hr {
-    border-color: #191919;
+    border-width: 1px;
+}
+
+#containerWorld {
+    border-style: solid;
+    border-width: 3px;
 }
 
 p {
@@ -38,19 +73,14 @@ button {
     cursor:pointer;
 }
 
-button,
-.button-c-default {
-    background-color: #AAA;
-    border-color: #666;
-}
-
 button:hover {
     opacity:0.9;
 }
 
+button,
 .button-c-default {
-    background-color: #AAA;
-    border-color: #666;
+    border-color: rgb(80, 50, 0);
+    background-color: rgb(165, 104, 0);
 }
 
 .button-c-red {
@@ -63,12 +93,36 @@ button:hover {
     border-color: rgb(116, 117, 20);
 }
 
+.text-outline
+ {
+	text-shadow:
+	 -1px -1px 0 #000,  
+	  1px -1px 0 #000,
+	 -1px 1px 0 #000,
+      1px 1px 0 #000;
+      
+    color: white;
+}
+
+#containerMenus {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    width:100%;
+    height:100%;
+    z-index:10000;
+    pointer-events: none;
+}
+
 .chat-line {
     line-height:23px;
 }
 
 .item {
-    border:1px solid gray;
+    background-color: rgb(30, 30, 30);
+    border:2px solid gray;
     cursor:pointer;
 
     position: relative;
@@ -137,7 +191,6 @@ button:hover {
     position:relative;
     width:100%;
     height:20px;
-    border:1px solid gray;
     text-align: center;
 }
 
@@ -185,7 +238,7 @@ button:hover {
 
     font-size: 0.95vw;
 
-    z-index:100;
+    pointer-events: all;
 }
 
 .menu-header {
@@ -235,21 +288,37 @@ button:hover {
     margin-bottom: 1vw;
 }
 
-.item-rarity-0  { background-color: rgb(45, 45, 45); }
-.item-rarity-1  { background-color: rgb(15, 60, 15); }
-.item-rarity-2  { background-color: rgb(15, 15, 60); }
-.item-rarity-3  { background-color: rgb(60, 15, 60); }
-.item-rarity-4  { background-color: rgb(60, 60, 15); }
-.item-rarity-5  { background-color: rgb(60, 15, 15); }
-.item-rarity-6  { background-color: rgb(15, 60, 60); }
-.item-rarity-7  { background-color: rgb(15, 15, 15); }  
-.item-rarity-8  { background: linear-gradient(rgb(15, 15, 15), rgb(45, 45, 45)); }
-.item-rarity-9  { background: linear-gradient(rgb(15, 15, 15), rgb(15, 60, 15)); }
-.item-rarity-10 { background: linear-gradient(rgb(15, 15, 15), rgb(15, 15, 60)); }
-.item-rarity-11 { background: linear-gradient(rgb(15, 15, 15), rgb(60, 15, 60)); }
-.item-rarity-12 { background: linear-gradient(rgb(15, 15, 15), rgb(60, 60, 15)); }
-.item-rarity-13 { background: linear-gradient(rgb(15, 15, 15), rgb(60, 15, 15)); }
-.item-rarity-14 { background: linear-gradient(rgb(15, 15, 15), rgb(15, 60, 60)); }
+.item-rarity-0                  { border-color: rgb(180, 180, 180); }
+.item-rarity-0>div:first-child  { background-color: rgb(130, 130, 130); }
+.item-rarity-1                  { border-color: rgb(15, 180, 15); }
+.item-rarity-1>div:first-child  { background-color: rgb(15, 130, 15); }
+.item-rarity-2                  { border-color: rgb(40, 40, 180); }
+.item-rarity-2>div:first-child  { background-color: rgb(40, 40, 130); }
+.item-rarity-3                  { border-color: rgb(200, 50, 200); }
+.item-rarity-3>div:first-child  { background-color: rgb(130, 15, 130); }
+.item-rarity-4                  { border-color: rgb(200, 200, 15); }
+.item-rarity-4>div:first-child  { background-color: rgb(130, 130, 15); }
+.item-rarity-5                  { border-color: rgb(200, 15, 15); }
+.item-rarity-5>div:first-child  { background-color: rgb(130, 15, 15); }
+.item-rarity-6                  { border-color: rgb(15, 200, 200); }
+.item-rarity-6>div:first-child  { background-color: rgb(15, 130, 130); }
+.item-rarity-7                  { border-color: rgb(15, 15, 15); }
+.item-rarity-7>div:first-child  { background-color: rgb(0, 0, 0); }
+
+.item-rarity-8                  { border-color: rgb(180, 180, 180); }
+.item-rarity-8>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 15)); }
+.item-rarity-9                  { border-color: rgb(180, 180, 180); }
+.item-rarity-9>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(40, 40, 130)); }
+.item-rarity-10                  { border-color: rgb(180, 180, 180); }
+.item-rarity-10>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 130)); }
+.item-rarity-11                  { border-color: rgb(180, 180, 180); }
+.item-rarity-11>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 130, 15)); }
+.item-rarity-12                  { border-color: rgb(180, 180, 180); }
+.item-rarity-12>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(130, 15, 15)); }
+.item-rarity-13                  { border-color: rgb(180, 180, 180); }
+.item-rarity-13>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(15, 130, 130)); }
+.item-rarity-14                  { border-color: rgb(180, 180, 180); }
+.item-rarity-14>div:first-child  { background: linear-gradient(rgb(130, 130, 130), rgb(0, 0, 0)); }
 
 .c-white {
     color: #dddddd
@@ -288,7 +357,7 @@ button:hover {
 }
 
 .bg-teal {
-    background-color: rgb(0, 128, 123)
+    background-color: rgb(0, 162, 156)
 }
 
 .bg-red {
@@ -296,15 +365,15 @@ button:hover {
 }
 
 .bg-str {
-    background-color: rgba(255, 0, 0, 0.5);
+    background-color: rgb(230, 30, 30);
 }
 
 .bg-def {
-    background-color: rgba(0, 195, 255, 0.5);
+    background-color: rgb(0, 170, 200);
 }
 
 .bg-agi {
-    background-color: rgba(0, 255, 0, 0.5);
+    background-color: rgb(0, 200, 0);
 }
 
 .bg-damage {
@@ -333,15 +402,15 @@ button:hover {
 
 .icon-str::before {
     content: "STR";
-    color: rgba(255, 0, 0, 0.5);
+    color: rgb(230, 30, 30);
 }
 .icon-def::before {
     content: "DEF";
-    color: rgba(0, 195, 255, 0.5);
+    color: rgb(0, 170, 200);
 }
 .icon-agi::before {
     content: "AGI";
-    color: rgba(0, 255, 0, 0.5);
+    color: rgb(0, 200, 0);
 }
 .icon-all::before {
     content: "ALL";
@@ -377,15 +446,13 @@ button:hover {
 
 #containerLog * {
     user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
 }
 
 #containerProgressRarityChance {
     cursor: pointer;
-}
-
-#containerProgressRarityChance .progress-bar,
-#progressBattleMaxSubWaveCurrentZone.progress-bar {
-    border-right: 2px dotted gray;
 }
 
 #progressBattleMaxSubWaveCurrentZone.progress-bar {

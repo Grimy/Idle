@@ -2,55 +2,24 @@ const Menu = ((window, document) => {
     "use strict";
 
     return class Menu {
-        constructor(init, document) {
+        constructor(init, template, container) {
             init = init || {};
 
             this.sMenus = Symbol();
             this[this.sMenus] = [];
 
-            this.sDocument = Symbol();
-            this[this.sDocument] = document;
+            this.sTemplate = Symbol();
+            this[this.sTemplate] = template;
+
+            this.sContainer = Symbol();
+            this[this.sContainer] = container;
         }
 
         init() {
             
         }
-        
-        create(x, y, width, height, title, description, onclick) {
-            let menus = this[this.sMenus];
-            
-            menus.push({
-                title: title,
-                description: description,
-                translateX: x,
-                translateY: y,
-                width: width,
-                height: height,
 
-                onclick : onclick,
-            });
 
-            return this.setup(menus.length - 1);
-        }
-
-        createMultipleChoice(x, y, width, height, title, description, cb) {
-            let menus = this[this.sMenus];
-
-            menus.push({
-                title: title,
-                description: description,
-                translateX: x,
-                translateY: y - 200,
-                width: width,
-                height: height,
-
-                onclick: function(e, menu) {
-                    cb(this.dataset.value);
-                }
-            });
-
-            this.setup(menus.length - 1);
-        }
 
         createChangeValueWeights(player, windowWidth, windowHeight) {
             let description = '';
@@ -68,17 +37,8 @@ const Menu = ((window, document) => {
             description += '<hr>';
             description += '<input style="width:50%" data-var="playerStats" type="number" step="0.01"></input> - Player Stats';
 
-            let menus = this[this.sMenus];
-            menus.push({
-                title: "Quantum Universe Alterator",
-                description: description,
-                translateX: Math.floor(windowWidth / 2 - windowWidth * 0.15),
-                translateY: Math.floor(windowHeight / 2 - windowWidth * 0.13),
-                width: "36vw",
-                height: "auto",
-            });
-
-            let elem = this.setup(menus.length - 1);
+            let elem = this.create(Math.floor(windowWidth / 2 - windowWidth * 0.15), Math.floor(windowHeight / 2 - windowWidth * 0.13),
+                            "36vw", "auto", "Quantum Universe Alterator", description);
 
             let inputs = Array.from(elem.querySelectorAll("input[data-var]"));
             let l = inputs.length;
@@ -145,12 +105,9 @@ const Menu = ((window, document) => {
             let menus = this[this.sMenus];
             let menu = menus.find(menu => menu.item === item);
             if(menu != null) {
-                menu.elem.parentNode.removeChild(menu.elem);
-                menus.splice(menus.indexOf(menu), 1);
+                this.remove(menu);
                 return;
             }
-
-            let maxStatRoll = item.getStatRoll(true);
 
             let title = '<div style="width:100%;height:100%" class=item-rarity-' + item.rarity + '>Item Rarity: ' + item.rarity + '</span>';
             
@@ -196,6 +153,7 @@ const Menu = ((window, document) => {
             
             description += "<hr>";
             
+            let maxStatRoll = item.getStatRoll(true);
 
             for(let name in item.stats) {
                 buildStat(name, item.stats[name], maxStatRoll, (item.stats[name] / item.getStatRoll(true)* player.weights.playerStats) + "x");
@@ -227,11 +185,6 @@ const Menu = ((window, document) => {
                 height: "auto",
 
                 item: item,
-                /*callbacks: {
-                    itemEquip: cbEquip,
-                    itemReroll: cbReroll,
-                    itemSell: cbSell
-                },*/
             };
 
             menus.push(menu);
@@ -261,14 +214,35 @@ const Menu = ((window, document) => {
             }
         }
 
+        create(x, y, width, height, title, description) {
+            let menus = this[this.sMenus];
+            
+            menus.push({
+                title: title,
+                description: description,
+                translateX: x,
+                translateY: y,
+                width: width,
+                height: height
+            });
+
+            return this.setup(menus.length - 1);
+        }
+
+        remove(menu) {
+            menu.elem.parentNode.removeChild(menu.elem);
+            menus.splice(menus.indexOf(menu), 1);
+        }
+
         setup(index) {
             try {
                 let menus = this[this.sMenus];
                 let menu = menus[index];
 
-                let document = this[this.sDocument];
+                let container = this[this.sContainer];
+                let template = this[this.sTemplate];
 
-                let fragment = document.getElementById("template_menu").content.cloneNode(true);
+                let fragment = template.content.cloneNode(true);
 
                 let elem = Array.prototype.slice.call(fragment.childNodes, 0)[1];
                 menu.elem = elem;
@@ -279,33 +253,6 @@ const Menu = ((window, document) => {
                 elem.querySelector(".menu-header").innerHTML = menu.title;
                 elem.querySelector(".menu-content").innerHTML = menu.description;
                 elem.style.transform = "translateX(" + menu.translateX + "px) translateY(" + menu.translateY + "px)";
-
-                let buttons = elem.querySelectorAll("button");
-                let bl = buttons.length;
-
-                if(menu.onclick != null) {
-                    for(let i = 0; i < bl; i++) {
-                        buttons[i].onclick = function(e) {
-                            menu.onclick.bind(this)(e, elem);
-                            elem.parentNode.removeChild(elem);
-                            menus.splice(menus.indexOf(menu), 1);
-                        }
-                    }
-                }
-
-                let callbacks = menu.callbacks;
-                if(callbacks != null) {
-                    for(let i = 0; i < bl; i++) {
-                        let button = buttons[i];
-                        for(let name in button.dataset) {
-                            button.onclick = () => {
-                                callbacks[name]();
-                                elem.parentNode.removeChild(elem);
-                                menus.splice(menus.indexOf(menu), 1);
-                            };
-                        }
-                    }
-                }
 
                 elem.querySelector(".menu-x").onclick = () => {
                     elem.parentNode.removeChild(elem);
@@ -339,8 +286,7 @@ const Menu = ((window, document) => {
                     }
                 })();
                 
-
-                document.body.appendChild(elem);
+                container.appendChild(elem);
                 return elem;
             } catch(e) {console.error(e)}
         }

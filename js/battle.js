@@ -198,7 +198,7 @@ const Battle = ((window, document) => {
                     }
                     else {
                         player.health -= Battle.getDamage(enemy.damage, enemy.stats.str, player.stats.def.total);
-                        player.removeRage(10);
+                        player.removeRage(2);
                     }
                     
                     if(player.health <= 0) {

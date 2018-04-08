@@ -13,7 +13,7 @@
 
 <template id="template_item_weapon">
     <div class="item">
-        <div style="width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
+        <div style="height:1vw; width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:left; top:1.5vw; text-align:left;"><span>0</span><span class="icon-damagespeed"></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:left; top:0.8vw; text-align:left;"><span>0</span><span class="icon-damage"></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:right; top:0.8vw; text-align:right;"><span>0</span><span class="icon-reach"></span></div>
@@ -25,7 +25,7 @@
 
 <template id="template_item_armor">
     <div class="item">
-        <div style="width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
+        <div style="height:1vw; width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:right; top:0.8vw; text-align:right;"><span>0</span><span class="icon-health"></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:left; top:0.8vw; text-align:left;"><span>0</span><span class="icon-regen"></span></div>
         <div style="width:100%; line-height:1.2vw; position:absolute; float:left; top:1.5vw; text-align:left;"><span>0</span><span class="icon-regenspeed"></span></div>
@@ -37,7 +37,7 @@
 
 <template id="template_item_default">
     <div class="item">
-        <div style="width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
+        <div style="height:1vw; width:100%; line-height:1.2vw; position:absolute; float:left; text-align:center;"><span>0</span><span></span></div>
         <div style="width: 70%;height: 30%;bottom: 0.1vw;position: absolute;left: 15%;border:1px solid gray"></div>
         <div class="item-attack-progress" style="position:absolute;width:100%;left:0"></div>
         <div class="item-regen-progress" style="position:absolute;width:100%;left:0"></div>
@@ -45,19 +45,15 @@
 </template>
 
 <template id="template_enemy">
-    <div class="enemy">
-        <div><span></span><span class="c-gray"></span><span class="c-red"><span class="icon-damage"></span></span> <span></span><span class="c-gray"></span><span class="c-green"><span class="icon-damagespeed"></span></div>
-        <div class="progress-bar-outer" style="width:10vw">
-            <div class="progress-bar-text"></div>
-            <div class="progress-bar"></div>
-            <div class="enemy-attack-progress" style="position:absolute;width:100%;left:0"></div>
+    <div class="text-outline enemy">
+        <div><span data-id="textDamage"></span><span data-id="textDamageBase" class="c-gray"></span><span class="c-red"><span class="icon-damage"></span></span> <span data-id="textSpeed"></span><span class="c-green"><span class="icon-damagespeed"></span></div>
+        <div data-id="containerProgress" style="border-left:1px solid black">
+            <div class="progress-bar-outer" style="width:10vw;border:1px solid black;border-left:none;">
+                <div data-id="textHealth" class="progress-bar-text"></div>
+                <div data-id="progressHealth" class="progress-bar"></div>
+                <div data-id="progressCooldown" class="enemy-attack-progress" style="position:absolute;width:100%;left:0"></div>
+            </div>
         </div>
-    </div>
-</template>
-
-<template id="template_loot">
-    <div class="loot" style="height:2vw, width:2vw">
-        
     </div>
 </template>
 
@@ -69,9 +65,11 @@
     </div>
 </template>
 
-<body class="body-performance-high c-white" style="display:flex">
-    <div style="position:absolute;bottom:0;left:0">V0.0.2</br>expect your save to be deleted</br>made by @Grabz#4707</div>
-    <div style="flex:0 0 13vw; margin-right:10px">
+<body class="body-performance-high text-outline" style="display:flex">
+    <div id="containerMenus"></div>
+
+    <div style="position:absolute;bottom:0;left:0">V0.1.0</br>expect your save to be deleted</br>made by @Grabz#4707</div>
+    <div style="flex:0 0 14vw; margin-right:10px">
         <div style="float:left">Total Time:</div> <div style="float:right" id="textTimer"></div><br>
         <div style="float:left">Run Time:</div> <div style="float:right" id="textTimerRun"></div><br>
         <hr>
@@ -95,29 +93,34 @@
         <hr>
         <div id="containerStats"></div>
         <hr>
-        <span>Equipment:</span>
-        <div style="width:100%; height:calc((4.615vw - 6px) * 3); border:1px solid #191919; position:relative">
-            <div id="containerCharacterItemSlot1" class="item-slot item-slot-weapon" style="position:absolute;left: 1px; top:calc((4.615vw - 6px) / 2)"></div>
-            <div id="containerCharacterItemSlot2" class="item-slot item-slot-weapon" style="position:absolute;left: calc(100% - (4.615vw - 4px)); top:calc((4.615vw - 6px) / 2)"></div>
-            <div id="containerCharacterItemSlot3" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:0"></div>
-            <div id="containerCharacterItemSlot4" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:calc(4.615vw - 7px)"></div>
-            <div id="containerCharacterItemSlot5" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:calc((4.615vw - 7px) * 2)"></div>
+        <div style="position:relative;display:flex;flex-flow:column nowrap">
+            <span>Equipment:</span>
+            <div class="panel" style="width:100%; flex:1 0 calc((4.615vw - 6px) * 3); position:relative">
+                <div id="containerCharacterItemSlot1" class="item-slot item-slot-weapon" style="position:absolute;left: 1px; top:calc((4.615vw - 6px) / 2)"></div>
+                <div id="containerCharacterItemSlot2" class="item-slot item-slot-weapon" style="position:absolute;left: calc(100% - (4.615vw - 4px)); top:calc((4.615vw - 6px) / 2)"></div>
+                <div id="containerCharacterItemSlot3" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:0"></div>
+                <div id="containerCharacterItemSlot4" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:calc(4.615vw - 7px)"></div>
+                <div id="containerCharacterItemSlot5" class="item-slot item-slot-armor" style="position:absolute;left: calc(50% - (4.615vw - 6px) / 2);top:calc((4.615vw - 7px) * 2)"></div>
+            </div>
+            <hr>
+            <span>Backpack:</span>
+            <div class="panel" id="containerItemBackpack" style="flex:1 10 calc(4.615vw * 2 + 2px); display:flex; flex-flow: row wrap; align-content: flex-start; width:100%;"></div>
         </div>
-        <hr>
-        <span>Backpack:</span>
-        <div id="containerItemBackpack" style="display:flex; flex-flow: row wrap; align-content: flex-start; width:100%; height:10vw; border:1px solid #191919; overflow-y:scroll"></div>
     </div>
     <div style="flex:0 0 60vw; display:flex; flex-flow:column nowrap">
-        <div style="display:flex; flex-flow:column nowrap; flex:2 0 auto">
-            <div id="containerBattleEnemy" style="flex:1 0 auto; border:1px solid #191919; position:relative"></div>
+        <div id="containerWorld" style="display:flex; position:relative; flex-flow:column nowrap; flex:2 0 auto">
+            <div id="textCurrentTime" style="position:absolute;top:3px;right:3px"></div>
+            <div id="containerBattleEnemy" style="flex:1 0 auto; position:relative"></div>
             <div id="containerBattlePlayer" style="display:flex; flex-flow:row nowrap;flex:0 0 100px;">
                 <div style="flex:1 0 auto"></div>
                 <div style="display:flex; flex-flow:column nowrap; flex:4 0 auto">
                     <div style="flex:0 0 30%"></div>
-                    <div class="progress-bar-outer" style="flex:0 0 40%">
+                    <div class="progress-bar-outer text-outline" style="flex:0 0 34%; border-color:black;">
                         <div class="progress-bar-text"><span id="textPlayerHealth"></span>/<span id="textPlayerMaxHealth"></span></div>
                         <div id="progressPlayerHealth" class="progress-bar bg-teal"></div>
-                        <div id="progressPlayerRage" class="progress-bar bg-red" style="height: 20%; bottom: 0;"></div>
+                    </div>
+                    <div class="progress-bar-outer text-outline" style="flex:0 0 6%; border-color:black; margin-top:-1px">
+                        <div id="progressPlayerRage" class="progress-bar bg-red"></div>
                     </div>
                     <div style="flex:0 0 30%"></div>
                 </div>
@@ -125,15 +128,15 @@
             </div>
         </div>
         <div style="display:flex; flex-flow:column nowrap; flex:0 0 40vh">
-            <div style="display:flex; flex:0 0 10%; position:relative;">
-                <button style="line-height: 100%;" id="buttonInventorySort">Sort inventory</button>
-                <button style="line-height: 100%;" id="buttonInventoryDestroyWeakItems"><span class="icon-gold"></span> Force sell excess weak items</button>
+            <div style="margin-top:10px; display:flex; flex:0 0 10%; position:relative;">
+                <button class="button-c-default" style="line-height: 100%;" id="buttonInventorySort">Sort inventory</button>
+                <button class="button-c-default" style="line-height: 100%;" id="buttonInventoryDestroyWeakItems"><span class="icon-gold"></span> Force sell excess weak items</button>
             </div>
-            <div id="containerInventory" style="display:flex; flex-flow:row wrap; align-content:flex-start; flex:0 0 90%; box-shadow: 0 0 0 1px #191919 inset"></div>
+            <div class="panel" id="containerInventory" style="margin-top:10px; display:flex; flex-flow:row wrap; align-content:flex-start; flex:0 0 calc(4.615vw * 4)"></div>
         </div>
     </div>
     <div style="display:flex; flex-flow:column nowrap; width:100%; margin-left:10px">
-        <div id="containerLog" style="overflow-y: scroll;flex:0 0 30vh; border:1px solid #191919"></div>
+        <div class="panel" id="containerLog" style="overflow-y: scroll;flex:0 0 30vh"></div>
         <div style="flex:1 0 auto; margin-top:10px">
             <button id="buttonHelp" class="button-c-default" style="width:100%">Help</button>
             <hr>
@@ -155,6 +158,7 @@
     <script src="js/player.js?v=1"></script>
     <script src="js/enemy.js?v=1"></script>
     <script src="js/battle.js?v=1"></script>
+    <script src="js/world.js?v=1"></script>
 
     <script src="js/menu.js?v=1"></script>
 

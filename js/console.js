@@ -25,48 +25,6 @@
             add(containerLog, span, type);
         }
     }
-
-    let _log = console.log;
-    console.log = function() {
-        _log(arguments);
-
-        let containerLog = document.getElementById("containerLog");
-        if(containerLog != null) {
-            let span = document.createElement("span");
-            span.className = "c-gray";
-            span.innerHTML = Array.from(arguments).join();
-
-            add(containerLog, span);
-        }
-    }
-
-    let _warn = console.warn;
-    console.warn = function() {
-        _warn(arguments);
-
-        let containerLog = document.getElementById("containerLog");
-        if(containerLog != null) {
-            let span = document.createElement("span");
-            span.className = "c-orange";
-            span.innerHTML = Array.from(arguments).join();
-
-            add(containerLog, span);
-        }
-    }
-
-    /*let _error = console.error;
-    console.error = function() {
-        _error(arguments);
-
-        let containerLog = document.getElementById("containerLog");
-        if(containerLog != null) {
-            let span = document.createElement("span");
-            span.className = "c-red";
-            span.innerHTML = Array.from(arguments).join();
-
-            add(containerLog, span);
-        }
-    }*/
     
     function add(containerLog, span, type) {
         let date = new Date();

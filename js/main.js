@@ -15,16 +15,20 @@ let debug = (function() {
     })();
 
     let model = {
-        player: null,
-        battle: null,
-        menu: null,
+        modules: {
+            player: null,
+            battle: null,
+            menu: null,
+            world: null
+        },
         clock: 0,
         start: Date.now(),
         flags: {
             clickedHelp: false,
             lowPerformanceMode: false
         },
-        version: 12
+        version: 12,
+        subVersion: 1,
     }
 
     let paused = false;
@@ -32,10 +36,17 @@ let debug = (function() {
     load();
     onLowPerformanceChecked(model.flags.lowPerformanceMode, true);
 
-    if(model.player.inventory.length === 0) {
-        model.player.addItem(new Item().generateRandom(null, 0, Item.WEAPON));
-        model.player.addItem(new Item().generateRandom(null, 0, Item.ARMOR));
+    if(model.modules.player.inventory.length === 0) {
+        model.modules.player.addItem(new Item().generateRandom(null, 0, Item.WEAPON));
+        model.modules.player.addItem(new Item().generateRandom(null, 0, Item.ARMOR));
     }
+
+    try {
+        if(navigator.userAgent.indexOf('Firefox') > -1) {
+            document.getElementById("checkboxLowPerformance").disabled = true;
+            onLowPerformanceChecked(true, true);
+        }
+    } catch(e) {console.error(e)}
 
     try {
         let buttonHelp = document.getElementById("buttonHelp");
@@ -60,10 +71,10 @@ let debug = (function() {
             description += "<div><span class='icon-def'></span> - If your DEF is higher than enemy STR, you will receive less damage (and vice versa, same for enemies)</div>";
             description += "<div><span class='icon-agi'></span> - If your AGI is higher than enemy AGI, you will gain dodge chance (and vice versa). Each stat difference is 1% compounding dodge chance";
             description += "</div>";
-            model.menu.create(Math.floor(window.innerWidth / 2 - window.innerWidth * 0.25), Math.floor(window.innerHeight / 2 - window.innerWidth * 0.11) - 100, 
+            model.modules.menu.create(Math.floor(window.innerWidth / 2 - window.innerWidth * 0.25), Math.floor(window.innerHeight / 2 - window.innerWidth * 0.11) - 100, 
             "50vw", "22vw", "Help", description);
         }
-        document.getElementById("buttonBattle").onclick = e => model.battle.startNewRun(model.player);
+        document.getElementById("buttonBattle").onclick = e => model.modules.battle.startNewRun(model.modules.player);
         document.getElementById("buttonPause").onclick = function(e) {
             paused = !paused;
 
@@ -78,11 +89,11 @@ let debug = (function() {
         }
 
         document.getElementById("buttonChangeValueWeights").onclick = function(e) {
-            model.menu.createChangeValueWeights(model.player, window.innerWidth, window.innerHeight);
+            model.modules.menu.createChangeValueWeights(model.modules.player, window.innerWidth, window.innerHeight);
         }
 
-        document.getElementById("buttonInventorySort").onclick = e => model.player.sortInventory();
-        document.getElementById("buttonInventoryDestroyWeakItems").onclick = e => model.player.destroyWeakItems();
+        document.getElementById("buttonInventorySort").onclick = e => model.modules.player.sortInventory();
+        document.getElementById("buttonInventoryDestroyWeakItems").onclick = e => model.modules.player.destroyWeakItems();
 
         document.getElementById("checkboxLowPerformance").onchange = function(e) {
             model.flags.lowPerformanceMode = this.checked;
@@ -90,7 +101,7 @@ let debug = (function() {
         }
 
         document.getElementById("containerProgressRarityChance").onclick = e => {
-            let wave = model.battle.wave;
+            let wave = model.modules.battle.wave;
             let startingRarity = Item.getRarityRollStartingRarity(wave);
             let offset = Item.getRarityRollOffset(wave);
 
@@ -110,15 +121,15 @@ let debug = (function() {
                 description += "Rarity " + (i + startingRarity) + ": " + (Math.floor(arr[i] * 100000) / 100000) + "%<br>";
             }
 
-            model.menu.create(e.clientX, e.clientY, "20vw", "auto", "Rarity Chance Breakdown", description);
+            model.modules.menu.create(e.clientX, e.clientY, "20vw", "auto", "Rarity Chance Breakdown", description);
         }
     } catch(e) {
         console.error(e);
     }
 
     try {
-        document.getElementById("textPlayerHealth").innerHTML = model.player.health;
-        document.getElementById("textPlayerMaxHealth").innerHTML = model.player.maxHealth;
+        document.getElementById("textPlayerHealth").innerHTML = model.modules.player.health;
+        document.getElementById("textPlayerMaxHealth").innerHTML = model.modules.player.maxHealth;
     } catch(e) {
         console.error(e);
     }
@@ -137,20 +148,31 @@ let debug = (function() {
             if(s.flags != null) model.flags = s.flags;
             if(s.start != null) model.start = s.start;
 
-            model.player = new Player(s.player);
-            model.battle = new Battle(s.battle);
-            model.menu = new Menu(s.menu, document);
+            //COMPATIBILITY CODE
+            if(s.subVersion == null) {
+                model.modules.player = new Player(s.player);
+                model.modules.battle = new Battle(s.battle);
+                model.modules.menu = new Menu(s.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
+                model.modules.world = new World(null);
+            }
+            else {
+                model.modules.player = new Player(s.modules.player);
+                model.modules.battle = new Battle(s.modules.battle);
+                model.modules.menu = new Menu(s.modules.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
+                model.modules.world = new World(s.modules.world);
+            }
         }
         else {
-            model.player = new Player(null);
-            model.battle = new Battle(null);
-            model.menu = new Menu(null, document);
+            model.modules.player = new Player(null);
+            model.modules.battle = new Battle(null);
+            model.modules.menu = new Menu(null, document.getElementById("template_menu"), document.getElementById("containerMenus"));
+            model.modules.world = new World(null);
         }
         (() => {
             function refreshEnemyStats(elem, enemy) {
                 let arr = elem != null ? [{elem:elem,enemy:enemy}] : ((() => {
                     let arr = [];
-                    let enemies = model.battle.enemies;
+                    let enemies = model.modules.battle.enemies;
                     let l = enemies.length;
                     for(let i = 0; i < l; i++) {
                         let enemy = enemies[i];
@@ -165,15 +187,33 @@ let debug = (function() {
                     elem = obj.elem;
                     enemy = obj.enemy;
 
-                    elem.children[0].children[0].innerHTML = Math.ceil(Battle.getDamage(enemy.damage, enemy.stats.str, model.player.stats.def.total));
-                    elem.children[0].children[1].innerHTML = "(" + Math.ceil(enemy.damage) + ")";
-                    elem.children[0].children[3].innerHTML = Math.ceil(1 / (Battle.getEnemyInterval(enemy.damageSpeed, enemy.stats.agi, model.player.stats.agi.total) / 1000) * 10) / 10;
-                    elem.children[1].children[0].innerHTML = Math.ceil(enemy.health) + "/" + Math.ceil(enemy.maxHealth);
-                    elem.children[1].children[1].style.transform = "translateX(-" + (100 - Math.ceil(enemy.health / enemy.maxHealth * 100)) + "%)";
-                    let j = 2;
-                    for(let name in enemy.stats) {
-                        elem.children[j].style.transform = "translateX(-" + (100 - enemy.stats[name] / model.player.stats[name].total * 100) + "%)";
-                        j++;
+                    if(elem === null)
+                        continue;
+
+                    let elems = Array.from(elem.querySelectorAll("[data-id]"));
+                    for(let elem in elems) {
+                        elem = elems[elem];
+
+                        switch(elem.dataset["id"]) {
+                        case "textDamage":
+                            elem.innerHTML = Math.ceil(Battle.getDamage(enemy.damage, enemy.stats.str, model.modules.player.stats.def.total));
+                            break;
+                        case "textDamageBase":
+                            elem.innerHTML = "(" + Math.ceil(enemy.damage) + ")";
+                            break;
+                        case "textSpeed":
+                            elem.innerHTML = Math.ceil(1 / (Battle.getEnemyInterval(enemy.damageSpeed, enemy.stats.agi, model.modules.player.stats.agi.total) / 1000) * 10) / 10;
+                            break;
+                        case "textHealth":
+                            elem.innerHTML = Math.ceil(enemy.health) + "/" + Math.ceil(enemy.maxHealth);
+                            break;
+                        }
+
+                        for(let name in enemy.stats) {
+                            if(elem.dataset["id"] === "progress" + name) {
+                                elem.style.transform = Utility.getProgressBarTransformCSS(enemy.stats[name], model.modules.player.stats[name].total);
+                            }
+                        }
                     }
                 }
             }
@@ -182,7 +222,7 @@ let debug = (function() {
                 let node = document.getElementById("enemy" + enemy.id);
                 if(node != null) {
                     node = node.querySelector(".enemy-attack-progress");
-                    node.style.transform = "translateX(-" + (100 - enemy._battleCoordinatorClockSelf / enemy._battleCoordinatorClockSelfFinish * 100) + "%)";
+                    node.style.transform = Utility.getProgressBarTransformCSS(enemy._battleCoordinatorClockSelf, enemy._battleCoordinatorClockSelfFinish);
                 }
                 
             }
@@ -191,15 +231,15 @@ let debug = (function() {
                 function refreshItemProgress(item) {
                     let elem = cache.get(item);
                     let node = elem.querySelector(".item-attack-progress");
-                    node.style.transform = "translateX(-" + (100 - item._battleClockSpeed / item._battleClockSpeedFinish * 100) + "%)";
+                    node.style.transform = Utility.getProgressBarTransformCSS(item._battleClockSpeed, item._battleClockSpeedFinish);
                 
                     node = elem.querySelector(".item-regen-progress");
-                    node.style.transform = "translateX(-" + (100 - item._battleClockRegenSpeed / item._battleClockRegenSpeedFinish * 100) + "%)";;
+                    node.style.transform = Utility.getProgressBarTransformCSS(item._battleClockRegenSpeed, item._battleClockRegenSpeedFinish);
                 }
 
                 let cache = new Map();
 
-                model.player.on("itemsChanged", (items, allItems) => {
+                model.modules.player.on("itemsChanged", (items, allItems) => {
                     try {
                         let containerInventory = document.getElementById("containerInventory");
 
@@ -236,7 +276,7 @@ let debug = (function() {
 
                             if(item.type === Item.WEAPON) {
                                 fragment = document.getElementById("template_item_weapon").content.cloneNode(true);
-                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.player.weights));
+                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.modules.player.weights));
                                 fragment.children[0].children[1].children[0].innerHTML = Math.floor(item.damageSpeed * 10) / 10;
                                 fragment.children[0].children[2].children[0].innerHTML = item.damage;
                                 fragment.children[0].children[3].children[0].innerHTML = item.reach;
@@ -244,7 +284,7 @@ let debug = (function() {
                             }
                             else if(item.type === Item.ARMOR) {
                                 fragment = document.getElementById("template_item_armor").content.cloneNode(true);
-                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.player.weights));
+                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.modules.player.weights));
                                 fragment.children[0].children[1].children[0].innerHTML = item.health;
                                 fragment.children[0].children[2].children[0].innerHTML = item.regen;
                                 fragment.children[0].children[3].children[0].innerHTML = item.regenSpeed;
@@ -252,7 +292,7 @@ let debug = (function() {
                             }
                             else {
                                 fragment = document.getElementById("template_item_default").content.cloneNode(true);
-                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.player.weights));
+                                fragment.children[0].children[0].children[0].innerHTML = Math.round(item.getValue(model.modules.player.weights));
                                 nextChild = 1;
                             }
 
@@ -263,7 +303,7 @@ let debug = (function() {
                                 div.style.position = "relative";
                                 div.style.height = height + "%";
 
-                                div.style.transform = "translateX(-" + (100 - Math.ceil(item.stats[name] / item.getStatRoll(true) * 100)) + "%)";
+                                div.style.transform = Utility.getProgressBarTransformCSS(item.stats[name], item.getStatRoll(true));
 
                                 fragment.children[0].children[nextChild].appendChild(div);
                             }
@@ -297,19 +337,19 @@ let debug = (function() {
                             elem.className += " item-rarity-" + item.rarity + " item-" + item.type;
 
                             elem.onclick = (e) => {
-                                model.menu.createItem(e.clientX, e.clientY, item, model.player,
+                                model.modules.menu.createItem(e.clientX, e.clientY, item, model.modules.player,
                                     (slot) => {
-                                        model.player.equipItem(item, slot);
+                                        model.modules.player.equipItem(item, slot);
                                     },
                                     () => {
                                         let rollsArr = [10, 100, 1000];
 
-                                        model.menu.createItemReroll(e.clientX, e.clientY, item, model.player, rerolls => {
-                                            model.player.rerollItem(item, rerolls);
+                                        model.modules.menu.createItemReroll(e.clientX, e.clientY, item, model.modules.player, rerolls => {
+                                            model.modules.player.rerollItem(item, rerolls);
                                         });
                                     },
-                                    () => model.player.sellItem(item),
-                                    () => model.player.backpackItem(item));
+                                    () => model.modules.player.sellItem(item),
+                                    () => model.modules.player.backpackItem(item));
                             };
                         }
                     } catch(e){
@@ -317,7 +357,7 @@ let debug = (function() {
                     }
                 });
 
-                model.battle.on("playerUpdated", player => {
+                model.modules.battle.on("playerUpdated", player => {
                     try {
                         let l = player.inventory.length;
                         for(let i = 0; i < l; i++) {
@@ -335,15 +375,15 @@ let debug = (function() {
                 });
             })();
 
-            model.player.on("rageChanged", (value, max) => {
-                document.getElementById("progressPlayerRage").style.transform = "translateX(-" + (100 - Math.ceil(value / max * 100)) + "%)";
+            model.modules.player.on("rageChanged", (value, max) => {
+                document.getElementById("progressPlayerRage").style.transform = Utility.getProgressBarTransformCSS(value, max);
             });
 
-            model.player.on("statsUpdated", player => {
+            model.modules.player.on("statsUpdated", player => {
                 try {
-                    document.getElementById("textPlayerLevel").innerHTML = model.player.level;
-                    document.getElementById("textPlayerXP").innerHTML = model.player.xp + " / " + model.player.getCurrentMaxXP() + " XP";
-                    document.getElementById("progressPlayerXP").style.transform = "translateX(-" + (100 - Math.ceil(model.player.xp / model.player.getCurrentMaxXP() * 100)) + "%)";
+                    document.getElementById("textPlayerLevel").innerHTML = model.modules.player.level;
+                    document.getElementById("textPlayerXP").innerHTML = model.modules.player.xp + " / " + model.modules.player.getCurrentMaxXP() + " XP";
+                    document.getElementById("progressPlayerXP").style.transform = Utility.getProgressBarTransformCSS(model.modules.player.xp, model.modules.player.getCurrentMaxXP());
 
                     document.getElementById("textPlayerGold").innerHTML = player.gold.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
@@ -363,17 +403,17 @@ let debug = (function() {
                 } catch(e){console.error(e);}
             });
 
-            model.player.on("itemRerolled", (originalValue, newValue) => {
+            model.modules.player.on("itemRerolled", (originalValue, newValue) => {
                 let description = "Item successfully rerolled<br><br>Old value: " + Utility.prettify(originalValue) + "<br>New value: " + Utility.prettify(newValue);
-                model.menu.create(Math.floor(window.innerWidth / 2 - window.innerWidth * 0.1), Math.floor(window.innerHeight / 2 - window.innerWidth * 0.05), "20vw", "10vw", "Item Rerolled", description);
+                model.modules.menu.create(Math.floor(window.innerWidth / 2 - window.innerWidth * 0.1), Math.floor(window.innerHeight / 2 - window.innerWidth * 0.05), "20vw", "10vw", "Item Rerolled", description);
             });
 
-            model.battle.on("nextWaveStarted", (wave, subWave, maxSubWave, highestWave, maxSubWaveCurrentZone) => {
+            model.modules.battle.on("nextWaveStarted", (wave, subWave, maxSubWave, highestWave, maxSubWaveCurrentZone) => {
                 try {
                     document.getElementById("textBattleWave").innerHTML = "Wave " + wave;
-                    document.getElementById("progressBattleWave").style.transform = "translateX(-" + (100 - (subWave / maxSubWave) * 100) + "%)";
+                    document.getElementById("progressBattleWave").style.transform = Utility.getProgressBarTransformCSS(subWave, maxSubWave);
                     document.getElementById("textBattleHighestWave").innerHTML = highestWave;
-                    document.getElementById("progressBattleMaxSubWaveCurrentZone").style.transform = "translateX(-" + (100 - (maxSubWaveCurrentZone / maxSubWave) * 100) + "%)";
+                    document.getElementById("progressBattleMaxSubWaveCurrentZone").style.transform = Utility.getProgressBarTransformCSS(maxSubWaveCurrentZone, maxSubWave);
 
                     let containerProgressRarityChance = document.getElementById("containerProgressRarityChance");
 
@@ -388,7 +428,7 @@ let debug = (function() {
                         let div = document.createElement("div");
                         div.className = "progress-bar item-rarity-" + (i + startingRarity);
 
-                        div.style.transform = "translateX(-" + (100 - (offset / Math.pow(10, i)) * 100) + "%)";
+                        div.style.transform = Utility.getProgressBarTransformCSS(offset, Math.pow(10, i));
                         containerProgressRarityChance.appendChild(div);
                     }
                     
@@ -396,32 +436,32 @@ let debug = (function() {
                 } catch(e) {console.error(e);}
             });
 
-            model.battle.on("playerUpdated", player => {
+            model.modules.battle.on("playerUpdated", player => {
                 try {
                     document.getElementById("textPlayerHealth").innerHTML = Math.ceil(player.health);
                     document.getElementById("textPlayerMaxHealth").innerHTML = player.maxHealth;
-                    document.getElementById("progressPlayerHealth").style.transform = "translateX(-" + (100 - Math.ceil((player.health / player.maxHealth) * 100)) + "%)";
+                    document.getElementById("progressPlayerHealth").style.transform = Utility.getProgressBarTransformCSS(player.health, player.maxHealth);
                 } catch(e) {console.error(e);}
             });
 
-            model.battle.on("enemyDamaged", enemy => {
+            model.modules.battle.on("enemyDamaged", enemy => {
                 try {
                     let elem = document.getElementById("enemy" + enemy.id);
                     if(elem != null) {
                         elem.querySelector(".progress-bar-text").innerHTML = Math.ceil(enemy.health) + "/" + enemy.maxHealth;
-                        elem.querySelector(".progress-bar").style.transform = "translateX(-" + (100 - Math.ceil(enemy.health / enemy.maxHealth * 100)) + "%)";
+                        elem.querySelector(".progress-bar").style.transform = Utility.getProgressBarTransformCSS(enemy.health, enemy.maxHealth);
                     }
                 } catch(e) {console.error(e);}
             });
 
-            model.battle.on("enemyUpdated", enemy => {
+            model.modules.battle.on("enemyUpdated", enemy => {
                 try {
                     refreshEnemyProgress(enemy);
                 } catch(e) {console.error(e);}
             });
 
 
-            model.battle.on("enemiesRemoved", enemies => {
+            model.modules.battle.on("enemiesRemoved", enemies => {
                 try {
                     let containerBattleEnemy = document.getElementById("containerBattleEnemy");
                     if(enemies == null) {
@@ -438,7 +478,7 @@ let debug = (function() {
                 } catch(e) {console.error(e);}
             });
 
-            model.battle.on("enemiesAdded", enemies => {
+            model.modules.battle.on("enemiesAdded", enemies => {
                 try {
                     let fragmentContainer = document.createDocumentFragment();
                     let l = enemies.length;
@@ -446,13 +486,18 @@ let debug = (function() {
                         let enemy = enemies[i];
                         let fragment = document.getElementById("template_enemy").content.cloneNode(true);
 
+                        let containerProgress = fragment.querySelector("[data-id=containerProgress]");
+                        
                         for(let name in enemy.stats) {
                             let div = document.createElement("div");
                             div.className = "progress-bar bg-" + name;
                             div.style.position = "relative";
                             div.style.height = "6px";
+                            div.style.border = "1px solid black";
+                            div.style.marginTop = "-1px";
+                            div.dataset.id = "progress" + name;
 
-                            fragment.children[0].appendChild(div);
+                            containerProgress.appendChild(div);
                         }
                                         
                         
@@ -470,77 +515,89 @@ let debug = (function() {
                     containerBattleEnemy.appendChild(fragmentContainer);
                 } catch(e) {console.error(e);}
             });
+
+            model.modules.world.on("timeUpdated", (r, g, b, hours, minutes) => {
+                document.getElementById("containerWorld").style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
+                document.getElementById("textCurrentTime").innerHTML = (hours<10?"0"+hours:hours) + ":" + (minutes<10?"0"+minutes:minutes);
+            })
         })();
 
-        model.battle.init();
-        model.player.init();
-        model.menu.init();
+        for(let module in model.modules) {
+            module = model.modules[module];
+            if(typeof module.init === "function")
+                module.init();
+        }
     }
 
-    (() => {
-        let frameTime = 100;
-        let frameClock = 0;
-        let lastTimestamp = 0;
+    let frameTime = 100;
+    let frameClock = 0;
+    let lastTimestamp = 0;
 
-        offlineLoop();
-        window.requestAnimationFrame(coreLoop);
+    offlineLoop();
+    window.requestAnimationFrame(coreLoop);
 
-        function offlineLoop() {
-            let now = Date.now();
-            let dif = (now - model.start) - model.clock;
+    function offlineLoop() {
+        let now = Date.now();
+        let dif = (now - model.start) - model.clock;
+
+        catchingUp = true;
+        while(dif >= frameTime) {
+            model.modules.battle.update(frameTime, model.clock, model.modules.player);
+            dif -= frameTime;
+            model.clock += frameTime;
+        }
+        catchingUp = false;
+
+        for(let module in model.modules) {
+            module = model.modules[module];
+            if(typeof module.init === "function")
+                module.init();
+        }
+    }
+
+    function coreLoop(timestamp) {
+        frameClock += (timestamp - lastTimestamp);
+
+        if(frameClock >= frameTime * 10) {
+            let loops = Math.floor(frameClock / frameTime);
 
             catchingUp = true;
-            while(dif >= frameTime) {
-                model.battle.update(frameTime, model.clock, model.player);
-                dif -= frameTime;
+            for(let i = 0; i < loops; i++) {
+                loop(frameTime);
+                frameClock -= frameTime;
                 model.clock += frameTime;
             }
             catchingUp = false;
 
-            model.battle.init();
-            model.player.init();
-            model.menu.init();
+            for(let module in model.modules) {
+                module = model.modules[module];
+                if(typeof module.init === "function")
+                    module.init();
+            }
+        }
+        else if(frameClock >= frameTime) {
+            frameClock -= frameTime;
+            model.clock += frameTime;
+
+            loop(frameTime);
+
+            document.getElementById("textTimer").innerHTML = Utility.getFormattedTime(model.clock);
+            document.getElementById("textTimerRun").innerHTML = Utility.getFormattedTime(model.modules.battle.timestampTimeElapsedInRun);
+
+            if(model.clock % 5000 === 0)
+                save();
         }
 
-        function coreLoop(timestamp) {
-            frameClock += (timestamp - lastTimestamp);
-
-            if(frameClock >= frameTime * 10) {
-                let loops = Math.floor(frameClock / frameTime);
-
-                catchingUp = true;
-                for(let i = 0; i < loops; i++) {
-                    loop(frameTime);
-                    frameClock -= frameTime;
-                    model.clock += frameTime;
-                }
-                catchingUp = false;
-
-                model.battle.init();
-                model.player.init();
-            }
-            else if(frameClock >= frameTime) {
-                frameClock -= frameTime;
-                model.clock += frameTime;
-
-                loop(frameTime);
-
-                document.getElementById("textTimer").innerHTML = Utility.getFormattedTime(model.clock);
-                document.getElementById("textTimerRun").innerHTML = Utility.getFormattedTime(model.battle.timestampTimeElapsedInRun);
-
-                if(model.clock % 5000 === 0)
-                    save();
-            }
-
-            lastTimestamp = timestamp;
-            window.requestAnimationFrame(coreLoop);
-        }
-    })();
+        lastTimestamp = timestamp;
+        window.requestAnimationFrame(coreLoop);
+    }
 
     function loop(frameTime) {
         if(!paused) {
-            model.battle.update(frameTime, model.clock, model.player);
+            model.modules.battle.update(frameTime, model.clock, model.modules.player);
         }
+
+        model.modules.world.update(frameTime);
     }
 
     function onLowPerformanceChecked(checked, init) {
@@ -555,6 +612,9 @@ let debug = (function() {
     }
 
     return {
-        model
+        model,
+        offsetFrameClock: function(num) {
+            frameClock += num;
+        }
     }
 })();

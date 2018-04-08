@@ -44,5 +44,8 @@ const Utility = Object.freeze({
     },
     prettify : function(val) {
         return Math.ceil(val * 100) / 100;
-    }
+    },
+    getProgressBarTransformCSS : function(number, maxNumber) {
+        return "translateX(-" + (100 - Math.ceil(number / maxNumber * 100)) + "%)";
+    },
 });
