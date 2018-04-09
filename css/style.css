@@ -1,5 +1,156 @@
+:root {
+    --scrollbar-width: 14px;
+    --panel-margin: 10px;
+
+    --item-width: 4.615vw;
+    --item-margin: 0.2vw;
+}
+
+#containerFooter {
+    position:absolute;
+    bottom:0;
+    right:0;
+
+    text-align:right;
+}
+
+#containerPanelLeft {
+    position:relative;
+
+    flex:0 0 calc(var(--item-width) * 3 + var(--panel-margin) + var(--scrollbar-width) + var(--item-margin));
+
+    margin-right: var(--panel-margin);
+    padding-right: var(--panel-margin);
+
+    overflow-y: scroll;
+}
+
+#containerPanelCenter {
+    position:relative;
+
+    display:flex;
+    flex-flow:column nowrap;
+
+    flex:0 0 60vw;
+}
+
+#containerPanelRight {
+    display:flex;
+    flex-flow:column nowrap;
+
+    margin-left:10px;
+
+    flex:1 0 auto;
+}
+
+#containerEquipment {
+    position:relative;
+    width:100%; 
+
+    flex:0 0 calc(var(--item-width) * 3 + var(--item-margin));
+}
+.item-slot {
+    position:absolute;
+    width: calc(var(--item-width) - var(--item-margin) * 2);
+    height: calc(var(--item-width) - var(--item-margin) * 2);
+    margin: var(--item-margin);
+    background-color: black;
+}
+
+.item-slot .item {
+    margin: 0;
+}
+.item-slot#containerCharacterItemSlot1 {
+    left: 0;
+    top: 1vw;
+}
+.item-slot#containerCharacterItemSlot2 {
+    left: calc(var(--item-width) * 2);
+    top: 1vw;
+}
+.item-slot#containerCharacterItemSlot3 {
+    left: var(--item-width);
+    top: 0;
+}
+.item-slot#containerCharacterItemSlot4 {
+    left: var(--item-width);
+    top: var(--item-width);
+}
+.item-slot#containerCharacterItemSlot5 {
+    left: var(--item-width);
+    top: calc(var(--item-width) * 2);
+}
+
+#containerItemBackpack {
+    display:flex; 
+    flex-flow: row wrap; 
+    align-content: flex-start; 
+
+    flex:0 0 calc(var(--item-width) * 2 + var(--item-margin));
+}
+
+#containerWorld {
+    position:relative;
+    display:flex;
+    flex-flow:column nowrap;
+    flex:1 1 auto;
+}
+
+#textCurrentTime {
+    position:absolute;
+    top:3px;
+    right:3px;
+}
+
+#containerFloateys,
+#containerBattleEnemy {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    height:100%;
+}
+
+#containerBattlePlayer {
+    position:absolute;
+    display:flex;
+    flex-flow:row nowrap;
+    bottom:0;
+    height:100px;
+    width:100%
+}
+
+#containerInventoryButtons {
+    position:relative;
+    display:flex; 
+    margin-top:10px;
+
+    flex:0 0 2vw;
+}
+
+#containerInventory {
+    display:flex;
+    flex-flow:row nowrap;
+    justify-content:space-evenly;
+
+    margin-top:var(--panel-margin);
+
+    flex:0 0 calc(var(--item-width) * 4)
+}
+#containerInventoryWeapon,
+#containerInventoryArmor {
+    display:flex;
+    align-content:flex-start;
+    flex-flow:row wrap;
+
+    flex: 0 0 calc(var(--item-width) * 6)
+}
+
 ::-webkit-scrollbar {
     background-color:transparent;
+    width:var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {
@@ -142,9 +293,9 @@ button,
     cursor:pointer;
 
     position: relative;
-    width: calc(4.615vw - 6px);
-    height: calc(4.615vw - 6px);
-    margin: 3px 3px 3px 3px;
+    width: calc(var(--item-width) - var(--item-margin) * 2);
+    height: calc(var(--item-width) - var(--item-margin) * 2);
+    margin: var(--item-margin);
     text-align: center;
     font-size: 0.8vw;
 }
@@ -157,17 +308,6 @@ button,
 .item * {
     pointer-events:none;
     z-index:3;
-}
-
-.item-slot {
-    position: relative;
-    width: calc(4.615vw - 6px);
-    height: calc(4.615vw - 6px);
-    background-color: black;
-}
-
-.item-slot .item {
-    margin: 0;
 }
 
 .item-attack-progress,
