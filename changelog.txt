@@ -1,3 +1,7 @@
+2018-04-09 - V0.4.6
+* Made an attempt to fix the tabbed out lag issue.
+* Added sub wave to highest wave.
+
 2018-04-09 - V0.4.5
 * Backpack border fix (applied same fix as for inventory).
 

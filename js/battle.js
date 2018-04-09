@@ -11,6 +11,7 @@ const Battle = ((window, document) => {
             this.subWave = init.subWave || 1;
             this.maxSubWave = init.maxSubWave || 20;
             this.highestWave = init.highestWave || 0;
+            this.highestWaveSubWave = init.highestWaveSubWave || 0;
             this.maxSubWaveCurrentZone = init.maxSubWaveCurrentZone || 20;
             this.timestampTimeElapsedInRun = init.timestampTimeElapsedInRun || 0;
             
@@ -23,7 +24,7 @@ const Battle = ((window, document) => {
         init() {
             this.emit("enemiesRemoved");
             this.emit("enemiesAdded", this.enemies);
-            this.emit("nextWaveStarted", this.wave, this.subWave, this.maxSubWave, this.highestWave, this.maxSubWaveCurrentZone);
+            this.emit("nextWaveStarted", this.wave, this.subWave, this.maxSubWave, this.highestWave, this.highestWaveSubWave, this.maxSubWaveCurrentZone);
         }
 
         
@@ -101,9 +102,12 @@ const Battle = ((window, document) => {
     
             if(this.wave > this.highestWave)
                 this.highestWave = this.wave;
+
+            if(this.wave === this.highestWave && this.subWave > this.highestWaveSubWave)
+                this.highestWaveSubWave = this.subWave;
     
             this.emit("enemiesAdded", this.enemies);
-            this.emit("nextWaveStarted", this.wave, this.subWave, this.maxSubWave, this.highestWave, this.maxSubWaveCurrentZone);
+            this.emit("nextWaveStarted", this.wave, this.subWave, this.maxSubWave, this.highestWave, this.highestWaveSubWave, this.maxSubWaveCurrentZone);
         }
     
         update(fixedDelta, clock, player) {

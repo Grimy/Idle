@@ -437,11 +437,11 @@ let debug = (function() {
                 model.modules.menu.create(Math.floor(window.innerWidth / 2 - window.innerWidth * 0.1), Math.floor(window.innerHeight / 2 - window.innerWidth * 0.05), "20vw", "10vw", "Item Rerolled", description);
             });
 
-            model.modules.battle.on("nextWaveStarted", (wave, subWave, maxSubWave, highestWave, maxSubWaveCurrentZone) => {
+            model.modules.battle.on("nextWaveStarted", (wave, subWave, maxSubWave, highestWave, highestWaveSubWave, maxSubWaveCurrentZone) => {
                 try {
                     document.getElementById("textBattleWave").innerHTML = "Wave " + wave;
                     document.getElementById("progressBattleWave").style.transform = Utility.getProgressBarTransformCSS(subWave, maxSubWave);
-                    document.getElementById("textBattleHighestWave").innerHTML = highestWave;
+                    document.getElementById("textBattleHighestWave").innerHTML = highestWave + "." + highestWaveSubWave;
                     document.getElementById("progressBattleMaxSubWaveCurrentZone").style.transform = Utility.getProgressBarTransformCSS(maxSubWaveCurrentZone, maxSubWave);
 
                     let containerProgressRarityChance = document.getElementById("containerProgressRarityChance");
@@ -592,6 +592,7 @@ let debug = (function() {
     let frameTime = 100;
     let frameClock = 0;
     let lastTimestamp = 0;
+    let animationFrame = null;
 
     offlineLoop();
     window.requestAnimationFrame(coreLoop);
@@ -617,6 +618,7 @@ let debug = (function() {
 
     function coreLoop(timestamp) {
         frameClock += (timestamp - lastTimestamp);
+        lastTimestamp = timestamp;
 
         if(frameClock >= frameTime * 10) {
             let loops = Math.floor(frameClock / frameTime);
@@ -651,8 +653,8 @@ let debug = (function() {
                 save();
         }
 
-        lastTimestamp = timestamp;
-        window.requestAnimationFrame(coreLoop);
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = window.requestAnimationFrame(coreLoop);
     }
 
     function loop(frameTime) {
