@@ -1,3 +1,6 @@
+2018-04-09 - V0.5.1
+* Un-broke item menus (oops).
+
 2018-04-09 - V0.5.0
 * Added village screen - currently only visual, will have more use later.
 

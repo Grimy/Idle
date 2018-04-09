@@ -197,7 +197,7 @@ const Menu = ((window, document) => {
             
             let description = '';
             description +=  '<div style="width:100%;margin-top:1vw">Value: ' + (Math.floor(item.getValue(player.weights) * 100) / 100) + '</div>';
-            description +=  '<div style="position:relative; width:calc(100% - 2vw);height:100%;margin-left:1vw;margin-right:1vw">';
+            description +=  '<div style="position:relative; width:calc(100% - 2vw);height:100%;margin: 1vw;margin-top:0">';
             
             description += "<hr>";
 
