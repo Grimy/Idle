@@ -258,7 +258,8 @@ let debug = (function() {
 
                 model.modules.player.on("itemsChanged", (items, allItems) => {
                     try {
-                        let containerInventory = document.getElementById("containerInventory");
+                        let containerInventoryWeapon = document.getElementById("containerInventoryWeapon");
+                        let containerInventoryArmor = document.getElementById("containerInventoryArmor");
 
                         if(!(items instanceof Array))
                             items = [items];
@@ -335,13 +336,13 @@ let debug = (function() {
 
                             switch(item._inventory.id) {
                             case Player.INVENTORY:
-                                containerInventory.appendChild(fragment);
+                                if(item.type === Item.WEAPON)
+                                    containerInventoryWeapon.appendChild(fragment);
+                                else
+                                    containerInventoryArmor.appendChild(fragment);
                                 break;
                             case Player.EQUIPMENT:
                                 let slotElem = document.getElementById("containerCharacterItemSlot" + item._inventory.data);
-                                let existingItemInSlot = slotElem.children[0];
-                                if(existingItemInSlot != null)
-                                    containerInventory.appendChild(existingItemInSlot);
                                 slotElem.appendChild(fragment);
                                 break;
                             case Player.BACKPACK:

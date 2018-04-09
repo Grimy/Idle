@@ -73,7 +73,7 @@
 <body class="body-performance-high text-outline" style="display:flex">
     <div id="containerMenus"></div>
 
-    <div style="position:absolute;bottom:0;left:0">V0.4.0</br>expect your save to be deleted</br>made by @Grabz#4707</div>
+    <div style="position:absolute;bottom:0;left:0">V0.4.1</br>expect your save to be deleted</br>made by @Grabz#4707</div>
     <div style="flex:0 0 14vw; margin-right:10px">
         <div style="float:left">Total Time:</div> <div style="float:right" id="textTimer"></div><br>
         <div style="float:left">Run Time:</div> <div style="float:right" id="textTimerRun"></div><br>
@@ -143,7 +143,10 @@
                 <button class="button-c-default" style="line-height: 100%;" id="buttonInventorySort">Sort inventory</button>
                 <button class="button-c-default" style="line-height: 100%;" id="buttonInventoryDestroyWeakItems"><span class="icon-gold"></span> Force sell excess weak items</button>
             </div>
-            <div class="panel" id="containerInventory" style="margin-top:10px; display:flex; flex-flow:row wrap; align-content:flex-start; flex:0 0 calc(4.615vw * 4)"></div>
+            <div style="margin-top:10px; display:flex; flex-flow:row nowrap; justify-content:space-evenly; flex:0 0 calc(4.615vw * 4)">
+                <div class="panel" id="containerInventoryWeapon" style="display:flex; align-content:flex-start; flex-flow:row wrap; flex: 0 0 calc(4.615vw * 6)"></div>
+                <div class="panel" id="containerInventoryArmor" style="display:flex; align-content:flex-start; flex-flow:row wrap; flex: 0 0 calc(4.615vw * 6)"></div>
+            </div>
         </div>
     </div>
     <div style="display:flex; flex-flow:column nowrap; width:100%; margin-left:10px">

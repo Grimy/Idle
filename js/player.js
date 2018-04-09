@@ -129,7 +129,7 @@ const Player = ((window, document) => {
             this.inventory.push(item);
             this.emit("itemsChanged", [item], false);
     
-            if(this.inventory.length > 52)
+            if(this.inventory.length > 36 + 5 + 6)
                 this.destroyWeakItems();
             return true;
         }
@@ -431,8 +431,8 @@ const Player = ((window, document) => {
         destroyWeakItems() {
             this.sortInventory();
 
-            let ignoreThresholdWeapon = 13;
-            let ignoreThresholdArmor = 13;
+            let ignoreThresholdWeapon = 12;
+            let ignoreThresholdArmor = 12;
 
             let l = this.inventory.length;
             for(let i = 0; i < l; i++) {

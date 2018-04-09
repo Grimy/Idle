@@ -35,7 +35,8 @@ hr,
     background-color: rgb(119, 75, 0);
 }
 
-.panel#containerInventory {
+.panel#containerInventoryWeapon,
+.panel#containerInventoryArmor {
     border: none;
     box-shadow: 0 0 0 1px rgb(165, 104, 0) inset;
 }
