@@ -33,6 +33,14 @@ let debug = (function() {
         subVersion: 2,
     }
 
+    let assets = {
+        imageVillage: new Image(),
+        imageVillageLightmap: new Image()
+    }
+
+    assets.imageVillage.src = "img/village.png";
+    assets.imageVillageLightmap.src = "img/village_lightmap.png";
+
     let paused = false;
 
     load();
@@ -89,6 +97,11 @@ let debug = (function() {
                 Utility.swapClass("button-c-", "button-c-default", this);
                 this.innerHTML = "Pause";
             }
+        }
+
+        document.getElementById("buttonToVillage").onclick = function(e) {
+            let date = new Date();
+            model.modules.menu.createVillage(date, assets.imageVillage, assets.imageVillageLightmap, window.innerWidth, window.innerHeight);
         }
 
         document.getElementById("buttonChangeValueWeights").onclick = function(e) {
@@ -645,6 +658,7 @@ let debug = (function() {
 
             model.modules.world.update(frameTime);
             model.modules.floateys.update(frameTime);
+            model.modules.menu.update(frameTime);
 
             document.getElementById("textTimer").innerHTML = Utility.getFormattedTime(model.clock);
             document.getElementById("textTimerRun").innerHTML = Utility.getFormattedTime(model.modules.battle.timestampTimeElapsedInRun);

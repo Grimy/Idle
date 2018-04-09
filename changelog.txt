@@ -1,3 +1,6 @@
+2018-04-09 - V0.5.0
+* Added village screen - currently only visual, will have more use later.
+
 2018-04-09 - V0.4.7
 * Fix highest sub wave counter.
 

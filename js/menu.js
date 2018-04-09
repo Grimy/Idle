@@ -16,10 +16,83 @@ const Menu = ((window, document) => {
         }
 
         init() {
-            
+            this.update();
         }
 
+        createVillage(date, imageVillage, imageVillageLightmap, windowWidth, windowHeight) {
+            let scaleX = Math.floor(windowWidth * 0.9 / 300);
+            let scaleY = Math.floor(windowHeight * 0.9 / 188);
+            let scale = Math.min(scaleX, scaleY);
 
+            let width = 300 * scale;
+            let height = 188 * scale;
+
+            let description = "";
+            description += "<canvas style='position:absolute;left:0;top:0'></canvas>";
+            description += "<canvas style='position:absolute;left:0;top:0'></canvas>";
+            description += "<canvas style='position:absolute;left:0;top:0'></canvas>";
+            description += "<canvas style='position:absolute;left:0;top:0'></canvas>";
+            description += "<div data-id='townHall' style='cursor:pointer;position:absolute;right:5%;bottom:10%;width:" + (60 * scaleX) + "px; height:" + (60 * scaleY) + "px'></div>";
+
+            let menus = this[this.sMenus];
+            
+            menus.push({
+                title: "Village",
+                description: description,
+                translateX: Math.floor(windowWidth / 2 - width / 2),
+                translateY: Math.floor(windowHeight / 2 - height / 2),
+                width: width + "px",
+                height: height + "px",
+                clock: 1000*60,
+
+                update: (function(frameTime) {
+                    this.clock += frameTime;
+                    if(this.clock < 1000*60)
+                        return;
+
+                    this.clock = 0;
+
+                    let elem = this.elem;
+
+                    let canvases = Array.from(elem.querySelectorAll("canvas"));
+                    for(let i = 0; i < canvases.length; i++) {
+                        let canvas = canvases[i];
+                        let ctx = canvas.getContext("2d");
+                        canvas.width = width;
+                        canvas.style.width = width + "px";
+                        canvas.height = height;
+                        canvas.style.height = height + "px";
+    
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.scale(scale, scale);
+                    }
+    
+                    let canvas, ctx;
+    
+                    canvas = canvases[0];
+                    ctx = canvas.getContext("2d");
+                    ctx.fillStyle = World.getSkyColorCSS(date);
+                    ctx.fillRect(0, 0, width, height);
+    
+                    canvas = canvases[1];
+                    ctx = canvas.getContext("2d");
+                    
+                    ctx.filter = "brightness(" + World.getVillageBrightnessPrc(date) + "%)";
+                    ctx.drawImage(imageVillage, 0, 0);
+    
+                    canvas = canvases[2];
+                    ctx = canvas.getContext("2d");
+    
+                    let hours = date.getHours();
+                    if(hours >= 5 && hours <= 20)
+                        ctx.clearRect(0, 0, width, height);
+                    else
+                        ctx.drawImage(imageVillageLightmap, 0, 0);
+                }),
+            });
+
+            return this.setup(menus.length - 1);
+        }
 
         createChangeValueWeights(player, windowWidth, windowHeight) {
             let description = '';
@@ -214,7 +287,7 @@ const Menu = ((window, document) => {
             }
         }
 
-        create(x, y, width, height, title, description) {
+        create(x, y, width, height, title, description, update) {
             let menus = this[this.sMenus];
             
             menus.push({
@@ -223,7 +296,9 @@ const Menu = ((window, document) => {
                 translateX: x,
                 translateY: y,
                 width: width,
-                height: height
+                height: height,
+
+                update: update
             });
 
             return this.setup(menus.length - 1);
@@ -234,6 +309,16 @@ const Menu = ((window, document) => {
             
             menu.elem.parentNode.removeChild(menu.elem);
             menus.splice(menus.indexOf(menu), 1);
+        }
+
+        update(frameTime) {
+            let menus = this[this.sMenus];
+            let l = menus.length;
+            for(let i = 0; i < l; i++) {
+                if(typeof menus[i].update === "function") {
+                    menus[i].update.bind(menus[i])(frameTime);
+                }
+            }
         }
 
         setup(index) {
@@ -250,7 +335,7 @@ const Menu = ((window, document) => {
                 menu.elem = elem;
 
                 elem.style.width = menu.width;
-                elem.style.height = menu.height;
+                elem.style.height = "calc(" + menu.height + " + 1.5vw)";
 
                 elem.querySelector(".menu-header").innerHTML = menu.title;
                 elem.querySelector(".menu-content").innerHTML = menu.description;
@@ -287,7 +372,7 @@ const Menu = ((window, document) => {
                         }
                     }
                 })();
-                
+
                 container.appendChild(elem);
                 return elem;
             } catch(e) {console.error(e)}
