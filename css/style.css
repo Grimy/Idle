@@ -26,7 +26,7 @@
 #containerPanelLeft {
     position:relative;
 
-    flex:0 0 calc(var(--item-width) * 3 + var(--panel-margin) + var(--scrollbar-width) + var(--item-margin));
+    flex:0 0 calc(var(--item-width) * 3 + var(--panel-margin) + var(--scrollbar-width));
 
     margin-right: var(--panel-margin);
     padding-right: var(--panel-margin);
@@ -211,7 +211,8 @@ hr,
 }
 
 .panel#containerInventoryWeapon,
-.panel#containerInventoryArmor {
+.panel#containerInventoryArmor,
+.panel#containerItemBackpack {
     border: none;
     box-shadow: 0 0 0 1px var(--ui-color-border) inset;
 }
