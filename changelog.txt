@@ -1,3 +1,6 @@
+2018-04-09 - V0.4.7
+* Fix highest sub wave counter.
+
 2018-04-09 - V0.4.6
 * Made an attempt to fix the tabbed out lag issue.
 * Added sub wave to highest wave.

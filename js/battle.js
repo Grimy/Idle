@@ -100,8 +100,10 @@ const Battle = ((window, document) => {
                 return b.screenY - a.screenY;
             });
     
-            if(this.wave > this.highestWave)
+            if(this.wave > this.highestWave) {
                 this.highestWave = this.wave;
+                this.highestWaveSubWave = 0;
+            }
 
             if(this.wave === this.highestWave && this.subWave > this.highestWaveSubWave)
                 this.highestWaveSubWave = this.subWave;
