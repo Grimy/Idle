@@ -1,3 +1,6 @@
+2018-04-09 - V0.4.2
+* Several layout changes to prevent bottom clipping on widescreen resolutions.
+
 2018-04-09 - V0.4.1
 * Separated loot inventory into two containers (one for weapons, one for armors).
 
