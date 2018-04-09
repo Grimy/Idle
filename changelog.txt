@@ -1,3 +1,6 @@
+2018-04-09 - V0.4.4
+* Moved all of the UI colors to global css variables as well.
+
 2018-04-09 - V0.4.3
 * Many layout improvements.
 
