@@ -1,8 +1,10 @@
 const Menu = ((window, document) => {
     "use strict";
 
-    return class Menu {
+    return class Menu extends EventEmitter {
         constructor(init, template, container) {
+            super();
+            
             init = init || {};
 
             this.sMenus = Symbol();

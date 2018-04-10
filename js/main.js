@@ -1,19 +1,6 @@
 "use strict";
 
 let debug = (function() {
-    let catchingUp = false;
-
-    (() => {
-    let _emitEvent = EventEmitter.prototype.emitEvent;
-    EventEmitter.prototype.emitEvent = function(e, t) {
-        if(catchingUp) {
-            return;
-        }
-        else
-            _emitEvent.bind(this)(e, t);
-    }
-    })();
-
     let model = {
         modules: {
             player: null,
@@ -614,16 +601,18 @@ let debug = (function() {
         let now = Date.now();
         let dif = (now - model.start) - model.clock;
 
-        catchingUp = true;
+        for(let module in model.modules)
+            model.modules[module].disableEvents();
+
         while(dif >= frameTime) {
             model.modules.battle.update(frameTime, model.clock, model.modules.player);
             dif -= frameTime;
             model.clock += frameTime;
         }
-        catchingUp = false;
-
+        
         for(let module in model.modules) {
             module = model.modules[module];
+            module.enableEvents();
             if(typeof module.init === "function")
                 module.init();
         }
@@ -636,16 +625,18 @@ let debug = (function() {
         if(frameClock >= frameTime * 10) {
             let loops = Math.floor(frameClock / frameTime);
 
-            catchingUp = true;
+            for(let module in model.modules)
+                model.modules[module].disableEvents();
+            
             for(let i = 0; i < loops; i++) {
                 loop(frameTime);
                 frameClock -= frameTime;
                 model.clock += frameTime;
             }
-            catchingUp = false;
 
             for(let module in model.modules) {
                 module = model.modules[module];
+                module.enableEvents();
                 if(typeof module.init === "function")
                     module.init();
             }

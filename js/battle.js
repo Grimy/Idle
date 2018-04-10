@@ -144,7 +144,7 @@ const Battle = ((window, document) => {
                         for(let i = 0; i < il; i++) {
                             let enemy = this.enemies[i];
                             
-                            if(Math.random() < Battle.getDodge(player.stats.agi.total, enemy.stats.agi)) {
+                            if(Math.random() < Battle.getDodge(enemy.stats.agi, player.stats.agi.total)) {
                                 this.emit("enemyDodged", enemy, item._inventory.data);
                             }
                             else {
@@ -204,7 +204,7 @@ const Battle = ((window, document) => {
                 if(enemy._battleCoordinatorClockSelf >= enemyInterval) {
                     enemy._battleCoordinatorClockSelf = 0;
                     
-                    if(Math.random() < Battle.getDodge(enemy.stats.agi, player.stats.agi.total)) {
+                    if(Math.random() < Battle.getDodge(player.stats.agi.total, enemy.stats.agi)) {
                         this.emit("playerDodged", player);
                     }
                     else {
@@ -235,16 +235,21 @@ const Battle = ((window, document) => {
             return 1 / ((1 / enemySpeed) * enemySpeedMult) * 1000;
         }
     
-        static getDamage(base, theirATK, myDEF) {
-            let mult = Math.pow(1.01, theirATK - myDEF);
-    
+        static getDamage(base, mySTR, theirDEF) {
+            let mult = 1;
+
+            if(mySTR > theirDEF) 
+                mult =  Math.pow(2, ((mySTR / theirDEF) - 1));
+            else if(mySTR < theirDEF)
+                mult =  Math.pow(0.5, ((theirDEF / mySTR) - 1));
+
             return base * mult;
         }
 
-        static getDodge(theirAGI, myAGI) {
+        static getDodge(myAGI, theirAGI) {
             let dodge = 0;
-            if(theirAGI < myAGI)
-                dodge = 1 - Math.pow(0.99, myAGI - theirAGI);
+            if(myAGI > theirAGI)
+                dodge = 1 - Math.pow(0.5, ((myAGI / theirAGI) - 1));
 
             return dodge;
         }
