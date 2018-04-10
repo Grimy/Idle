@@ -1,3 +1,6 @@
+2018-04-10 - V0.5.3
+* Changed stat multipliers formula.
+
 2018-04-10 - V0.5.2
 * Changed stat formula multipliers to be relative rather than absolute.
 * EventEmitter now has 2 more functions that define a global disable for all emits (for easier management).
