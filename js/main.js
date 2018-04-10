@@ -95,6 +95,31 @@ let debug = (function() {
             model.modules.menu.createChangeValueWeights(model.modules.player, window.innerWidth, window.innerHeight);
         }
 
+        document.getElementById("buttonExportSave").onclick = function(e) {
+            save();
+            let content = "Here's your save string!<br>";
+            content += "<textarea class='saveArea'>";
+            content += localStorage._save0_;
+            content += "</textarea>";
+            let elem = model.modules.menu.create(Math.floor(window.innerWidth * 0.25), Math.floor(window.innerHeight * 0.39), 
+                        "40vw", "8vw", "Export save", content);
+            elem.querySelector('.saveArea').select();
+        };
+
+        document.getElementById("buttonImportSave").onclick = function(e) {
+            let content = "Paste your save string here:<br>";
+            content += "<textarea id='saveAreaImport' class='saveArea'></textarea><br>";
+            content += "<button class='button-c-default'>Import</button>";
+            let elem = model.modules.menu.create(Math.floor(window.innerWidth * 0.25), Math.floor(window.innerHeight * 0.39), 
+                        "40vw", "8vw", "Import save", content);
+            elem.querySelector('button').onclick = function(e) {
+                localStorage._save0_ = document.getElementById('saveAreaImport').value;
+                load();
+                elem.querySelector('.menu-x').onclick();
+            };
+            elem.querySelector('.saveArea').focus();
+        };
+
         document.getElementById("buttonInventorySort").onclick = e => model.modules.player.sortInventory();
         document.getElementById("buttonInventoryDestroyWeakItems").onclick = e => model.modules.player.destroyWeakItems();
 

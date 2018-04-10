@@ -650,3 +650,13 @@ button,
 #progressBattleMaxSubWaveCurrentZone.progress-bar {
     background-color: transparent;
 }
+
+.saveArea {
+    width: 80%;
+    height: 4em;
+    margin: 1ex auto;
+    user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+}

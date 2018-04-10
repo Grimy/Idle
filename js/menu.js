@@ -343,10 +343,7 @@ const Menu = ((window, document) => {
                 elem.querySelector(".menu-content").innerHTML = menu.description;
                 elem.style.transform = "translateX(" + menu.translateX + "px) translateY(" + menu.translateY + "px)";
 
-                elem.querySelector(".menu-x").onclick = () => {
-                    elem.parentNode.removeChild(elem);
-                    menus.splice(menus.indexOf(menu), 1);
-                };
+                elem.querySelector(".menu-x").onclick = () => this.remove(menu);
 
                 (() => {
                     let lastClientX = null;
