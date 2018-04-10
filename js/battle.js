@@ -236,7 +236,7 @@ const Battle = ((window, document) => {
         }
     
         static getDamage(base, mySTR, theirDEF) {
-            let mult = Math.pow(64, mySTR / (mySTR + theirDEF) - 0.5);
+            let mult = Math.pow(8, (mySTR - theirDEF) / (mySTR + theirDEF));
 
             return base * mult;
         }
@@ -244,7 +244,7 @@ const Battle = ((window, document) => {
         static getDodge(myAGI, theirAGI) {
             let dodge = 0;
             if(myAGI > theirAGI)
-                dodge = 1 - 1 / Math.pow(64, myAGI / (myAGI + theirAGI) - 0.5);
+                dodge = 1 - Math.pow(8, (theirAGI - myAGI) / (theirAGI + myAGI));
 
             return dodge;
         }
