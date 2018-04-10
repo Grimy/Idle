@@ -42,8 +42,28 @@ const Utility = Object.freeze({
             className = className[0] + newClass;
         elem.className = className;
     },
-    prettify : function(val) {
-        return Math.ceil(val * 100) / 100;
+    prettify : function(number) {
+        if (number < 0)
+            return '-' + Utility.prettify(-number);
+
+        if (!Number.isFinite(number))
+            return '∞';
+
+        if (number < 10000)
+            return +number.toPrecision(4) + '';
+
+        let unit = 0;
+        while (number >= 999.5) {
+            number /= 1000;
+            ++unit;
+        }
+
+        let suffixes =
+            ('KMBTQaQiSxSpOcNoDcUdDdTdQadQidSxdSpdOdNdVUvDvTvQavQivSxvSpvOvNvTgUtgDtgTtgQatg' +
+            'QitgSxtgSptgOtgNtgQaaUqaDqaTqaQaqaQiqaSxqaSpqaOqaNqaQiaUqiDqiTqiQaqiQiqiSxqiSpqi' +
+            'OqiNqiSxaUsxDsxTsxQasxQisxSxsxSpsxOsxNsxSpaUspDspTspQaspQispSxspSpspOspNspOgUog' +
+            'DogTogQaogQiogSxogSpogOogNogNaUnDnTnQanQinSxnSpnOnNnCtUc').split(/(?=[A-Z])/);
+        return +number.toPrecision(3) + suffixes[unit - 1];
     },
     getProgressBarTransformCSS : function(number, maxNumber) {
         return "translateX(-" + (100 - Math.ceil(number / maxNumber * 100)) + "%)";
