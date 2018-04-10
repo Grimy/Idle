@@ -98,26 +98,27 @@ let debug = (function() {
         document.getElementById("buttonExportSave").onclick = function(e) {
             save();
             let content = "Here's your save string!<br>";
-            content += "<textarea class='saveArea'>";
+            content += "<textarea class='textareaSave'>";
             content += localStorage._save0_;
             content += "</textarea>";
             let elem = model.modules.menu.create(Math.floor(window.innerWidth * 0.25), Math.floor(window.innerHeight * 0.39), 
                         "40vw", "8vw", "Export save", content);
-            elem.querySelector('.saveArea').select();
+            elem.querySelector('.textareaSave').select();
         };
 
         document.getElementById("buttonImportSave").onclick = function(e) {
             let content = "Paste your save string here:<br>";
-            content += "<textarea id='saveAreaImport' class='saveArea'></textarea><br>";
+            content += "<textarea class='textareaSave'></textarea><br>";
             content += "<button class='button-c-default'>Import</button>";
             let elem = model.modules.menu.create(Math.floor(window.innerWidth * 0.25), Math.floor(window.innerHeight * 0.39), 
                         "40vw", "8vw", "Import save", content);
+            let textareaSave = elem.querySelector('.textareaSave');
             elem.querySelector('button').onclick = function(e) {
-                localStorage._save0_ = document.getElementById('saveAreaImport').value;
+                localStorage._save0_ = textareaSave.value;
                 load();
                 elem.querySelector('.menu-x').onclick();
             };
-            elem.querySelector('.saveArea').focus();
+            textareaSave.focus();
         };
 
         document.getElementById("buttonInventorySort").onclick = e => model.modules.player.sortInventory();
