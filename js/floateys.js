@@ -1,10 +1,8 @@
 const Floateys = ((window, document) => {
     "use strict";
 
-    return class Floateys extends EventEmitter {
+    return class Floateys {
         constructor(init, template, container) {
-            super();
-
             init = init || {};
 
             this.sTemplate = Symbol();

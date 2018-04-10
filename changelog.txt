@@ -1,3 +1,7 @@
+2018-04-10 - V0.5.5
+* Fix issue with floating numbers staying on screen after importing.
+* Exposed item DOM element cache to debug.
+
 2018-04-10 - V0.5.4
 * Added save import/export.
 

@@ -6,8 +6,7 @@ let debug = (function() {
             player: null,
             battle: null,
             menu: null,
-            world: null,
-            floateys: null,
+            world: null
         },
         clock: 0,
         start: Date.now(),
@@ -25,10 +24,14 @@ let debug = (function() {
         imageVillageLightmap: new Image()
     }
 
+    let floateys = new Floateys(null, document.getElementById("template_floatey"), document.getElementById("containerFloateys"));
+
     assets.imageVillage.src = "img/village.png";
     assets.imageVillageLightmap.src = "img/village_lightmap.png";
 
     let paused = false;
+
+    let itemCache = new Map();
 
     load();
     onLowPerformanceChecked(model.flags.lowPerformanceMode, true);
@@ -200,14 +203,12 @@ let debug = (function() {
             model.modules.battle = new Battle(s.modules.battle);
             model.modules.menu = new Menu(s.modules.menu, document.getElementById("template_menu"), document.getElementById("containerMenus"));
             model.modules.world = new World(s.modules.world);
-            model.modules.floateys = new Floateys(s.modules.floateys, document.getElementById("template_floatey"), document.getElementById("containerFloateys"));
         }
         else {
             model.modules.player = new Player(null);
             model.modules.battle = new Battle(null);
             model.modules.menu = new Menu(null, document.getElementById("template_menu"), document.getElementById("containerMenus"));
             model.modules.world = new World(null);
-            model.modules.floateys = new Floateys(null, document.getElementById("template_floatey"), document.getElementById("containerFloateys"));
         }
         (() => {
             function refreshEnemyStats(elem, enemy) {
@@ -272,7 +273,7 @@ let debug = (function() {
 
             (() => {
                 function refreshItemProgress(item) {
-                    let elem = cache.get(item);
+                    let elem = itemCache.get(item);
                     let node = elem.querySelector(".item-attack-progress");
                     node.style.transform = Utility.getProgressBarTransformCSS(item._battleClockSpeed, item._battleClockSpeedFinish);
                 
@@ -280,7 +281,7 @@ let debug = (function() {
                     node.style.transform = Utility.getProgressBarTransformCSS(item._battleClockRegenSpeed, item._battleClockRegenSpeedFinish);
                 }
 
-                let cache = new Map();
+                itemCache = new Map();
 
                 model.modules.player.on("itemsChanged", (items, allItems) => {
                     try {
@@ -296,17 +297,17 @@ let debug = (function() {
                             for(let i = 0; i < l; i++) {
                                 a[i].parentNode.removeChild(a[i]);
                             }
-                            cache = new Map();
+                            itemCache = new Map();
                         }
 
                         let l = items.length;
                         for(let i = 0; i < l; i++) {
                             let item = items[i];
 
-                            let existingElem = cache.get(item);
+                            let existingElem = itemCache.get(item);
                             if(item._deleted === true && existingElem != null) {
-                                cache.delete(item);
-                                cache = new Map(cache);
+                                itemCache.delete(item);
+                                itemCache = new Map(itemCache);
 
                                 existingElem.onclick = null;
                                 existingElem.parentNode.removeChild(existingElem);
@@ -358,7 +359,7 @@ let debug = (function() {
                             if(existingElem != null)
                                 existingElem.parentNode.removeChild(existingElem);
                             
-                            cache.set(item, elem);
+                            itemCache.set(item, elem);
 
                             switch(item._inventory.id) {
                             case Player.INVENTORY:
@@ -495,9 +496,9 @@ let debug = (function() {
                 try {
                     if(model.flags.enableDamageNumbers) {
                         if(playerHealthChange > 0) 
-                            model.modules.floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-teal");
+                            floateys.createFloatingNumber("+" + (Math.ceil(playerHealthChange * 10) / 10), "75%", "85%", "c-teal");
                         else if(playerHealthChange < 0)
-                            model.modules.floateys.createFloatingNumber((Math.ceil(playerHealthChange * 100) / 100), "75%", "85%", "c-red");
+                            floateys.createFloatingNumber((Math.ceil(playerHealthChange * 100) / 100), "75%", "85%", "c-red");
                     }
 
                     document.getElementById("textPlayerHealth").innerHTML = Math.ceil(player.health);
@@ -509,7 +510,7 @@ let debug = (function() {
             model.modules.battle.on("enemyDamaged", (enemy, damage, playerItemId) => {
                 try {
                     if(model.flags.enableDamageNumbers)
-                        model.modules.floateys.createFloatingNumber("-" + (Math.ceil(damage * 10) / 10), (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-red");
+                        floateys.createFloatingNumber("-" + (Math.ceil(damage * 10) / 10), (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-red");
 
                     let elem = document.getElementById("enemy" + enemy.id);
                     if(elem != null) {
@@ -521,13 +522,13 @@ let debug = (function() {
 
             model.modules.battle.on("enemyDodged", (enemy, playerItemId) => {
                 if(model.flags.enableDamageNumbers)
-                    model.modules.floateys.createFloatingNumber("Dodged", (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-green");
+                    floateys.createFloatingNumber("Dodged", (playerItemId === 1 ? enemy.screenX : enemy.screenX + 12) + "%", (enemy.screenY + 2) + "%", "c-green");
 
             });
 
             model.modules.battle.on("playerDodged", player => {
                 if(model.flags.enableDamageNumbers)
-                    model.modules.floateys.createFloatingNumber("Dodged", "75%", "85%", "c-green");
+                    floateys.createFloatingNumber("Dodged", "75%", "85%", "c-green");
 
             });
 
@@ -674,8 +675,9 @@ let debug = (function() {
             loop(frameTime);
 
             model.modules.world.update(frameTime);
-            model.modules.floateys.update(frameTime);
             model.modules.menu.update(frameTime);
+
+            floateys.update(frameTime);
 
             document.getElementById("textTimer").innerHTML = Utility.getFormattedTime(model.clock);
             document.getElementById("textTimerRun").innerHTML = Utility.getFormattedTime(model.modules.battle.timestampTimeElapsedInRun);
@@ -715,6 +717,10 @@ let debug = (function() {
         model,
         offsetFrameClock: function(num) {
             frameClock += num;
+        },
+        floateys,
+        getItemCache: function() {
+            return itemCache;
         }
     }
 })();
